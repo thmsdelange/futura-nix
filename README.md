@@ -10,8 +10,11 @@ My personal (hence highly-opiniated) NixOS configuration structured with a [dend
 
 ## Secrets
 
-- sops-nix
-- private futura-nix flake input
+Using [sops-nix](https://github.com/Mic92/sops-nix) with the secrets hosted in a private repository and pulled into the config as a flake input. Largely inspired by [EmergentMind's guide](https://unmovedcentre.com/posts/secrets-management/). An example of a private secrets repository can be found [here](https://github.com/EmergentMind/nix-secrets-reference/tree/complex).
+
+- Host secrets are decrypted using an age key derived from the host ssh key `/etc/ssh/ssh_host_ed25519_key`
+- User secrets are decrypted using an age key derived from the user ssh key `~/.ssh/id_ed25519`
+- Shared secrets can be accessed by all hosts
 
 ## Acknowledgements
 

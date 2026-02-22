@@ -1,9 +1,12 @@
+# Hugely influenced by https://github.com/yomaq/nix-config
+# TODO: wrap head around initrd
+# TODO: wrap head around disk encryption
 {
   inputs,
   ...
 }:
 {
-  # imports = [ inputs.disko.nixosModules.disko ];
+  # imports = [ inputs.disko.nixosModules.disko ]; # breaks
 
   flake.modules.nixos.core =
     {
