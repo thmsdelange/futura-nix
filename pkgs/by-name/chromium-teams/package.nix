@@ -1,7 +1,7 @@
 { pkgs }:
 
 pkgs.nix-webapps-lib.mkChromiumApp {
-  appName = "ec-teams";
+  appName = "teams";
   categories = [
     "Network"
     "Chat"

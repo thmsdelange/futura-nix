@@ -1,3 +1,4 @@
+# TODO: pull in soft secrets from futura-secrets declaring network stuff
 {
   flake.modules.nixos.core =
     { hostConfig, ... }:
@@ -9,7 +10,7 @@
         #   enable = true;
         # };
 
-        # useDHCP = true; # was set to false, TODO: configure static ip. This worked in iso because lib.mkDefault wase used to force useDHCP = true when the installer was included
+        # useDHCP = true;
       };
 
       systemd = {

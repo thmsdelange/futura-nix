@@ -1,3 +1,6 @@
+# TODO: clean this stuff up, 
+# decide wether to use the scripts standalone or to install in the nix store
+# both have advantages, installing in nix gives rise to sourcing complications
 {
   inputs,
   ...

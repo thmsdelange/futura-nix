@@ -1,4 +1,3 @@
-# TODO: merge with modules/host-specification/disks.nix
 topLevel:
 let
   inherit (topLevel) lib;

@@ -31,10 +31,10 @@
             inherit hostname;
             fastConnection = false;
             profiles.system = {
-              sshUser = "thms"; # TODO: generalize this "${config.hostSpec.users.primary.username}" cannot be used
+              sshUser = "thms"; # TODO: generalize this somehow 
               user = "root";
               sudo = "doas -u";
-              remoteBuild = true;
+              remoteBuild = false;
               confirmTimeout = 300;
               path = inputs.deploy-rs.lib.${system}.activate.nixos nixosConfiguration;
             };

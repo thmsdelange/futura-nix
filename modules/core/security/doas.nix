@@ -17,8 +17,8 @@
         extraRules = [
           {
             runAs = "root";
-            # cmd = "*";             # allow all commands
-            users = [ "${config.hostSpec.users.primary.username}" ]; # TODO: how do I expands this work for all users? i.e. get a list of all users
+            # cmd = "*";             # restrict to nixos-rebuild later
+            users = [ "${config.hostSpec.users.primary.username}" ]; # TODO: the user with isAdmin=true should get access to the nixos-rebuild command
             noPass = true; # nopass
             # keepEnv = true;        # optional, preserves environment
           }

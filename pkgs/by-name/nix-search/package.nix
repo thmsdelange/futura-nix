@@ -1,3 +1,4 @@
+# FIXME: not working
 {
   writeShellApplication,
   fzf,

@@ -1,3 +1,3 @@
-# only enable when desktop is included
+# TODO: only include if DE is enabled (isGraphical?)
 {
 }

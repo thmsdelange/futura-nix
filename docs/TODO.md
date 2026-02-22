@@ -1,8 +1,8 @@
 # TODO's
 
-## Phase 1: get familiar with [dendritic config]()
+## Get familiar with [dendritic config]()
 
-- [x] 1.1 Dendritic-specific config
+- [x] Dendritic-specific config
 
   - [x] Setup flake and minimal install with vm
   - [x] Define host as an aspect
@@ -10,56 +10,52 @@
   - [x] Define work as an aspect?
   - [x] Define user as an aspect
 
-- [ ] 1.2 define system core
+- [ ] Define system core
 
   - [x] networking
   - [x] ssh
   - [x] keys
   - [ ] git including github access token
-  - [ ] think about removing everything with initrd-ssh
 
-- [ ] 1.3 Migrate basic tools to config
-  - [x] shell
-  - [ ] dev
-  - [ ] editors
+## Setup futura-secrets
 
-## Phase 2: setup futura-secrets as a flake input
-
-- [x] 2.1 Import futura-secrets private repo in flake
-- [x] 2.2 Automate generation of host/user keys
+- [x] Import futura-secrets private repo in flake
+- [x] Automate generation of host/user keys
 - [ ] setup sops
   - [x] host-level and home level sops
-  - [ ] test with sending keys over to vm
-    - [ ] decrypt example key --> this does not work because the remote doesn't have the secret file, however when it is deployed from a remote it can decrypt the secrets it needs now!
-    - [ ] see if necessary to make zpools like etcssh
+  - [x] test with sending keys over to vm
+    - [x] decrypt example key --> this does not work because the remote doesn't have the secret file, however when it is deployed from a remote it can decrypt the secrets it needs now!
+    - [x] see if necessary to make zpools like etcssh
       - [x] works with zpool!
-      - [ ] check without making a zpool
-      - [ ] make home persist
-- [ ] 2.3 Use secrets for sensitive stuff
-  - [ ] user password
-  - [ ] networking configuration
-  - [ ] tokens
+      - [x] check without making a zpool
+- [ ] rewrite secrets structure: host has users password and ssh keys
+  - [ ] setup creating user secret side
+  - [ ] setup creating user config side
 
 Probably also here (requires changes in networking and ssh modules amongst others):
 
-- [ ] Manage ssh keys in config
+- [ ] Manage ssh keys in config (see above)
 - [ ] Setup tailscale in config
 
-## Phase 3: setup declarative disk paritioning with [disko](https://github.com/nix-community/disko)
+## Setup declarative disk paritioning with [disko](https://github.com/nix-community/disko)
 
-- [ ] 3.1 disko setup
+- [ ] disko setup
   - [x] flake input
   - [x] zfs module
   - [x] zfs disks
   - [x] zfs disks for storage
   - [x] zfs test mirror on new VM
   - [ ] syncoid sanoid
-- [x] 3.2 facter setup
+- [x] facter setup
 
-## Phase 4: Migrate DE and apps
+## Migrate DE and apps
 
 Configure one by one
 
+- [ ] Migrate basic tools to config
+  - [x] shell
+  - [ ] dev
+  - [ ] editors
 - [ ] shell
   - [ ] bottom
   - [ ] btop
@@ -78,17 +74,16 @@ Configure one by one
   - [ ] experiment with [Dank Material Shell](https://danklinux.com/) and niri
   - [ ] research possibility to have multiple DE's configured (for switching to un-broken configs on work pc)
 
-## Phase 5: QoL deployement stuff
+## Deployement stuff
 
 - [ ] Add pre commit checks
-- [ ] Add CI automated updates
 - [x] Make an iso host that can create an installer image with `just iso`
   - [x] iso has keys, user, minimal setup
 - [ ] [Automatic updating](https://blog.gothuey.dev/2025/nixos-auto-upgrade/) with CI/CD stuff
 
-## Phase 6: Homelab
+## Homelab
 
-- [ ] 6.1 setup delorean host
-- [ ] 6.2 setup tailnet
-- [ ] 6.3 setup services
+- [ ] setup delorean host
+- [ ] setup tailnet
+- [ ] setup services
   - [ ] Add each service to dashboard

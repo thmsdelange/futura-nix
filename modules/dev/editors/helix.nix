@@ -1,3 +1,3 @@
-# only include if host is not minimal
+# TODO: only include if DE is enabled (isGraphical?)
 {
 }

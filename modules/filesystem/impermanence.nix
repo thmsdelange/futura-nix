@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  # imports = [ inputs.impermanence.nixosModules.impermanence ];
+  # imports = [ inputs.impermanence.nixosModules.impermanence ]; # breaks
 
   flake.modules.nixos.core =
     {
@@ -14,6 +14,7 @@
     in
     {
       config = {
+        # TODO: put in context
         environment.persistence."${dontBackup}".directories = [
           "/var/lib/systemd"
           "/var/lib/nixos"
