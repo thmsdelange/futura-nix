@@ -93,5 +93,5 @@ The pi now has the ssh keys which will later be used to decrypt the secrets.
 5. Deploy the configuration, make sure to build locally, not on the pi
 
 ```
-deploy ......
+deploy --ssh-user="root" --ssh-opts="-o HostName=<IP>" .#twinpines
 ```
