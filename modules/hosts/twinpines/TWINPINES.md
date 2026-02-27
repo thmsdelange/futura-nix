@@ -45,6 +45,7 @@ Now the filesystems in `modules/hosts/twinpines/default.nix` can be set.
    For the host:
 
 ```
+temp=$(mktemp -d)
 ssh-keygen -t ed25519 -f "$temp/ssh_host_ed25519_key" -C "thms"@"twinpines" -N ""
 chmod 600 $temp/ssh_host_ed25519_key
 just sops-setup-host-age-key "thms" "twinpines" "$temp/ssh_host_ed25519_key.pub"
@@ -56,6 +57,12 @@ For the user:
 ssh-keygen -t ed25519 -f "$temp/id_ed25519" -C "thms"@"twinpines" -N ""
 chmod 600 $temp/id_ed25519
 just sops-setup-user-age-key "thms" "twinpines" "$temp/id_ed25519.pub"
+```
+
+and create a password:
+
+```
+just sops-set-passwd thms <password>
 ```
 
 Rekey, commit and push newly encrypted secrets:
@@ -78,6 +85,7 @@ scp $temp/ssh_host_ed25519_key* root@nixos:/etc/ssh/
 ssh root@nixos 'mkdir -p /home/thms/.ssh'
 scp $temp/id_ed25519* root@nixos:/home/thms/.ssh/
 ssh root@nixos 'chown -R 1000:100 /home/thms'
+rm -rf $temp
 ```
 
 The pi now has the ssh keys which will later be used to decrypt the secrets.

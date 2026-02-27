@@ -180,6 +180,11 @@ sops-setup-master-age-key:
     source {{HELPERS_PATH}}
     sops_setup_master_age_key
 
+sops-set-passwd USER PASSWD:
+    #!/usr/bin/env bash
+    source {{HELPERS_PATH}}
+    sops_set_user_password {{USER}} {{PASSWD}}
+
 # Retrieve host info such as network controllers, physical drives and generating ZFS hostid
 host-info USER HOST:
   scripts/host-info.sh {{USER}} {{HOST}}

@@ -472,7 +472,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 100
+            "address": 54
           },
           {
             "type": "phwaddr",
@@ -638,6 +638,28 @@
     "network_interface": [
       {
         "index": 18,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "index": 19,
         "attached_to": 8,
         "class_list": [
           "network_interface"
@@ -661,7 +683,7 @@
         "resources": [
           {
             "type": "hwaddr",
-            "address": 100
+            "address": 54
           },
           {
             "type": "phwaddr",
@@ -680,7 +702,7 @@
         ]
       },
       {
-        "index": 19,
+        "index": 20,
         "attached_to": 10,
         "class_list": [
           "network_interface"
@@ -718,28 +740,6 @@
         ],
         "driver_modules": [
           "lan78xx"
-        ]
-      },
-      {
-        "index": 20,
-        "attached_to": 0,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_names": [
-          "lo"
         ]
       }
     ],

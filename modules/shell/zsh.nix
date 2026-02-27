@@ -24,13 +24,15 @@
     };
   };
 
-  flake.modules.nixos.user-primary = 
-    { pkgs, config, ... }:
+  flake.modules.nixos.user-shells =
+    { pkgs, config, lib, ... }:
     {
-      users.users."${config.hostSpec.users.primary.username}" = {
-        shell = pkgs.zsh;
-        ignoreShellProgramCheck = true;
-      };
+      users.users = lib.mapAttrs (username: user:
+        {
+          shell = pkgs.zsh;
+          ignoreShellProgramCheck = true;
+        }
+      ) config.hostSpec.users;
     };
   
   flake.modules.homeManager.shell = 

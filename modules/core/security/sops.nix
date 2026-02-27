@@ -39,14 +39,17 @@ in
 
   # user-level sops
   flake.modules.homeManager.core =
-    { config, ... }:
+    { config, lib, ... }:
+    let
+      adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) config.hostSpec.users));
+    in
     {
       imports = [
         inputs.sops-nix.homeManagerModules.sops
       ];
 
       sops = {
-        defaultSopsFile = "${sopsRoot}/secrets/users/${config.hostSpec.users.primary.username}.yaml";
+        defaultSopsFile = "${sopsRoot}/secrets/users/${adminUser}.yaml";
         age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
         gnupg.sshKeyPaths = [ ];
       };

@@ -6,6 +6,9 @@
 {
   flake.modules.nixos.core =
     { config, ... }:
+    let
+      adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) config.hostSpec.users));
+    in
     {
       # Disable sudo
       security.sudo.enable = false;
@@ -18,7 +21,7 @@
           {
             runAs = "root";
             # cmd = "*";             # restrict to nixos-rebuild later
-            users = [ "${config.hostSpec.users.primary.username}" ]; # TODO: the user with isAdmin=true should get access to the nixos-rebuild command
+            users = [ adminUser ]; # TODO: check if works now or: the user with isAdmin=true should get access to the nixos-rebuild command
             noPass = true; # nopass
             # keepEnv = true;        # optional, preserves environment
           }

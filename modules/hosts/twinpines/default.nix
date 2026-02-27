@@ -21,10 +21,6 @@
         # lora
         # sound
         # vpn
-
-        # Users
-        # root
-        user-primary
       ]
       # Specific Home-Manager modules
       ++ [
@@ -36,7 +32,6 @@
               # dev
               # email
               # messaging
-              user-primary
               # games
               shell
               # work
@@ -58,13 +53,15 @@
 
     hostSpec = {
       networking.ssh.enable = true;
-      users.primary = {
-        username = "thms";
-        name = "Thomas de Lange";
-        email = "thomas-delange@hotmail.com";
-        authorizedKeys = [
-          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
-        ];
+      users = {
+        thms = {
+          name = "Thomas de Lange";
+          email = "thomas-delange@hotmail.com";
+          authorizedKeys = [
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
+          ];
+          isAdmin = true;
+        };
       };
     };
 

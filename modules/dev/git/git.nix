@@ -1,15 +1,18 @@
 # TODO: this is a bit much, find a more sane default config
 {
   flake.modules.homeManager.dev =
-    { config, ... }:
+    { config, lib, ... }:
+    let
+      adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) config.hostSpec.users));
+    in
     {
       programs = {
         git = {
           enable = true;
           settings = {
             user = {
-              inherit (config.hostSpec.users.primary) username;
-              inherit (config.hostSpec.users.primary) email;
+              name = adminUser.name;
+              email = adminUser.email;
             };
             branch = {
               autosetuprebase = "always";
@@ -62,7 +65,7 @@
             };
             signing = {
               signByDefault = true;
-              inherit (config.hostSpec.users.primary) key;
+              key = adminUser.key;
             };
             commit = {
               gpgsign = true;
