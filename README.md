@@ -18,7 +18,7 @@ Using [sops-nix](https://github.com/Mic92/sops-nix) with the secrets hosted in a
 
 ## Acknowledgements
 
-Inspiration and insights was found in
+Inspiration and insights were found in
 
 - [EmergentMind/nix-config](https://github.com/EmergentMind/nix-config)
 - [yomaq/nix-config](https://github.com/yomaq/nix-config)

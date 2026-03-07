@@ -1,5 +1,6 @@
 {
-  flake.modules.nixos.shell = 
+  flake.modules.nixos.shell =
+  { lib, pkgs, config, ... }: 
   {
     programs.zsh = {
       enable = true; # Enable zsh as the default shell
@@ -22,18 +23,14 @@
       #   # custom = ""; # Custom Oh My Zsh configuration
       # };
     };
-  };
 
-  flake.modules.nixos.user-shells =
-    { pkgs, config, lib, ... }:
-    {
-      users.users = lib.mapAttrs (username: user:
-        {
-          shell = pkgs.zsh;
-          ignoreShellProgramCheck = true;
-        }
-      ) config.hostSpec.users;
-    };
+    users.users = lib.mapAttrs (username: user:
+      {
+        shell = pkgs.zsh;
+        ignoreShellProgramCheck = true;
+      }
+    ) config.hostSpec.users;
+  };
   
   flake.modules.homeManager.shell = 
   {

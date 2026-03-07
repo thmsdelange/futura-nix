@@ -11,15 +11,6 @@
   ];
 
   flake.modules.nixos.core = {
-    programs = {
-      nh = {
-        enable = true;
-        clean = {
-          enable = true;
-          extraArgs = "--keep 2";
-        };
-      };
-    };
   };
 
   perSystem =
@@ -57,7 +48,7 @@
           # These will be installed regardless of what was installed specific for the host or home configs
           nix
           home-manager
-          nh
+          # nh
           git
           just
           pre-commit

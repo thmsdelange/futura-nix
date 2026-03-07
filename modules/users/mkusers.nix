@@ -35,7 +35,7 @@
       sops.secrets = lib.mkIf hasSecrets (
         lib.foldl' (acc: name:
           let
-            sopsFile = "${secretsRepo}/secrets/users/${name}.yaml"; 
+            sopsFile = "${secretsRepo}/sops/users/${name}.yaml"; 
           in
           acc // {
             "users/${name}/passwd" = { 
@@ -51,9 +51,9 @@
               mode = "0600"; 
               path = "/home/${name}/.ssh/id_ed25519"; 
             };
-            "users/${name}/id_ed25519_pub" = { 
+            "users/${name}/id_ed25519.pub" = { 
               inherit sopsFile; 
-              key = "id_ed25519_pub"; 
+              key = "id_ed25519.pub"; 
               owner = name; 
               group = "users"; 
               mode = "0644"; 
@@ -91,9 +91,10 @@
           ### setting initial throwaway password as well so we don't get locked out
           initialHashedPassword = lib.mkIf (!hasSecrets) (lib.mkDefault "$6$ZF1sMTVT9As8zING$51//RbVLuUiy/f35.KrPFP7NZjJGKgcv7uKwsIvr07hnSOCmKeHOZ9IwYQVM3ZH3FE3pmOunN3wY04npawroI1");
           hashedPasswordFile = lib.mkIf hasSecrets config.sops.secrets."users/${name}/passwd".path;
-          openssh.authorizedKeys.keyFiles = (if hasSecrets then [ 
-            config.sops.secrets."users/${name}/id_ed25519_pub".path 
-          ] else []) ++ (if builtins.length user.authorizedKeys > 0 then user.authorizedKeys else []);
+          # openssh.authorizedKeys.keyFiles = lib.mkIf hasSecrets ([ 
+          #   config.sops.secrets."users/${name}/id_ed25519.pub".path 
+          # ]);
+          openssh.authorizedKeys.keys = lib.mkIf (builtins.length user.authorizedKeys > 0) (user.authorizedKeys);
         }
       ) config.hostSpec.users
       // {

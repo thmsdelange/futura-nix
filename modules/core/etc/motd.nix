@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   flake.modules.nixos.core =
-    { config, ... }:
+    { config, hostConfig, ... }:
     {
       users.motdFile = "/etc/motd";
       environment.etc.motd.text = ''

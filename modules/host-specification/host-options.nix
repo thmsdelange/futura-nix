@@ -32,14 +32,6 @@ let
         It goes without saying that this is a temporary switch and as such sops should be configured prompty.
         '';
     };
-    networking = {
-      ssh = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-        };
-      };
-    };
     users = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule ({ ... }: {
         options = {
@@ -49,9 +41,9 @@ let
             description = "Full name of the user";
           };
           email = lib.mkOption {
-            type = lib.types.str;
-            default = "";
-            description = "Email address of the user";
+            type = lib.types.attrsOf lib.types.str;
+            default = {};
+            description = "Named email addresses (work, personal, etc.)";
           };
           authorizedKeys = lib.mkOption {
             type = with lib.types; listOf str;
@@ -80,46 +72,38 @@ let
       #     else true
       # );
     };
-    
-    # # users = mkOption {
-    # #   type = types.listOf types.str;
-    # #   default = [ "aarbour" ];
-    # #   description = ''
-    # #     A list of non-system users that should be declared for the host. The first user in the list will
-    # #     be treated as the Main User unless {option}`cauldron.system.mainUser` is set.
-    # #   '';
-    # # };
-    # users = {
-    #   primary = {
-    #     username = lib.mkOption {
-    #       type = lib.types.str;
-    #       default = "";
-    #       description = "Username of the primary user";
-    #     };
-    #     name = lib.mkOption {
-    #       type = lib.types.str;
-    #       default = "";
-    #       description = "Full name of the primary user";
-    #     };
-    #     email = lib.mkOption {
-    #       type = lib.types.str;
-    #       default = "";
-    #       description = "Email of the primary user";
-    #     };
-    #     authorizedKeys = lib.mkOption {
-    #       type = with lib.types; listOf str;
-    #       default = [];
-    #       description = "List of authorized SSH keys for the primary user";
-    #     };
-    #   };
-    # };
+    # Networking (freeform — can take entire secrets structure)
+    networking = lib.mkOption {
+      type = lib.types.submodule ({ ... }: {
+        freeformType = lib.types.attrsOf lib.types.anything;
+        options = {}; # no fixed options, everything comes from secrets
+      });
+      default = {};
+      description = "Host networking (subnets, hosts, ports, ssh, dns, etc.)";
+    };
+     # Services (freeform — can take entire secrets structure)
+    services = lib.mkOption {
+      type = lib.types.submodule ({ ... }: {
+        freeformType = lib.types.attrsOf lib.types.anything;
+        options = {}; # no fixed options, everything comes from secrets
+      });
+      default = {};
+      description = "Services configuration (e.g. adguardghome, etc.)";
+    };
   };
 in
 {
   flake.modules.nixos.hostSpec =
-    { config, lib, ... }:
+    { config, lib, inputs, ... }:
     {
       options.hostSpec = hostOptions;
+      config.hostSpec = {
+        inherit (inputs.futura-secrets)
+          networking
+          users
+          services
+          ;
+      };
     };
 
   flake.modules.homeManager.hostSpec =

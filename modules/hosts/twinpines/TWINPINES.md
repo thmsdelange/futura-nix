@@ -17,10 +17,11 @@ sudo -i
 mkpasswd
 ```
 
-3. Check that you can ssh into the pi
+3. Check that you can ssh into the pi and copy over your ssh key for convenience
 
 ```
 ssh root@nixos
+ssh-copy-id ~/id_ed25519 root@nixos
 ```
 
 4. Generate hardware configuration using [facter](https://github.com/nix-community/nixos-facter)

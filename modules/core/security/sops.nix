@@ -4,7 +4,6 @@
 }:
 let
   sopsRoot = builtins.toString inputs.futura-secrets;
-  sopsFolder = builtins.toString inputs.futura-secrets + "/sops";
 in
 {
   # hosts level sops
@@ -16,7 +15,7 @@ in
       ];
 
       sops = {
-        defaultSopsFile = "${sopsRoot}/secrets/shared.yaml";
+        defaultSopsFile = "${sopsRoot}/sops/shared.yaml";
         age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
         gnupg.sshKeyPaths = [ ];
       };
@@ -26,7 +25,7 @@ in
         # directly check for sops usage due to recursion in some situations
         # formatted as extra-access-tokens = github.com=<PAT token>
         "tokens/nix-access-tokens" = {
-          sopsFile = "${sopsFolder}/shared.yaml";
+          sopsFile = "${sopsRoot}/sops/shared.yaml";
         };
       };
 
@@ -49,7 +48,7 @@ in
       ];
 
       sops = {
-        defaultSopsFile = "${sopsRoot}/secrets/users/${adminUser}.yaml";
+        defaultSopsFile = "${sopsRoot}/sops/users/${adminUser}.yaml";
         age.sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
         gnupg.sshKeyPaths = [ ];
       };
@@ -60,12 +59,13 @@ in
         #   neededForUsers = true;
         # };
 
-        # NOTE: This entry is duplicated in home sops and here because nix.nix can't
-        # directly check for sops usage due to recursion in some situations
-        # formatted as extra-access-tokens = github.com=<PAT token>
-        "tokens/nix-access-tokens" = {
-          sopsFile = "${sopsFolder}/shared.yaml";
-        };
+        # TODO: check why this is necessary. The access token is in shared.yaml which only the hosts can read.
+        # # NOTE: This entry is duplicated in home sops and here because nix.nix can't
+        # # directly check for sops usage due to recursion in some situations
+        # # formatted as extra-access-tokens = github.com=<PAT token>
+        # "tokens/nix-access-tokens" = {
+        #   sopsFile = "${sopsRoot}/sops/shared.yaml";
+        # };
       };
     };
 }

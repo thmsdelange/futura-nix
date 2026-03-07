@@ -7,12 +7,12 @@
       pkgs,
       ...
     }:
-    let
-      futura-install = pkgs.writeShellApplication {
-        name = "futura-install";
-        text = builtins.readFile ../../../scripts/futura-install.sh;
-      };
-    in
+    # let
+      # futura-install = pkgs.writeShellApplication {
+      #   name = "futura-install";
+      #   text = builtins.readFile ../../../scripts/futura-install.sh;
+      # };
+    # in
     {
       imports =
         with config.flake.modules.nixos;
@@ -99,11 +99,11 @@
       services.getty.autologinUser = lib.mkForce "thms";
 
       environment.systemPackages = with pkgs; [
-        futura-install
+        # futura-install
 
         nix
         home-manager
-        nh
+        # nh
         git
         just
         pre-commit

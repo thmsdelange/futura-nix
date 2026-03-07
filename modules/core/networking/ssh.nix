@@ -4,11 +4,12 @@
     config,
     lib,
     pkgs,
+    hostConfig,
     ...
   }:
   let
-    cfg = config.hostSpec.networking.ssh;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+    sshPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.ssh or 22);
     # hostsCfg = config.inventory.hosts;  #TODO: make this work (yomaq)
     # # Generate host entries
     # regularHostEntries = lib.mapAttrs (hostname: hostConfig: {
@@ -27,18 +28,58 @@
     # allHostEntries = regularHostEntries // initrdHostEntries;
   in
   {
-    config = lib.mkIf cfg.enable {
+    config = {
       # programs.ssh.knownHosts = allHostEntries;
       services.openssh = {
         enable = true;
+        allowSFTP = true;
+        openFirewall = true;
+        ports = [ sshPort ];
         settings = {
           PermitRootLogin = "no";
+          AuthenticationMethods = "publickey";
+          PubkeyAuthentication = "yes";
           PasswordAuthentication = false;
-          # agent forwarding management
-          # remove stale sockets
-          StreamLocalBindUnlink = "yes";
-          # # Allow forwarding ports to everywhere
-          # GatewayPorts = "clientspecified";
+          PermitEmptyPasswords = false;
+          PermitTunnel = false;
+          UseDns = false;
+          ChallengeResponseAuthentication = "no";
+          KbdInteractiveAuthentication = false;
+          X11Forwarding = config.services.xserver.enable;
+          MaxAuthTries = 3;
+          MaxSessions = 2;
+          TCPKeepAlive = false;
+          AllowTcpForwarding = false;
+          AllowAgentForwarding = false;
+          LogLevel = "VERBOSE";
+
+          KexAlgorithms = [
+            "curve25519-sha256@libssh.org"
+            "ecdh-sha2-nistp521"
+            "ecdh-sha2-nistp384"
+            "ecdh-sha2-nistp256"
+            "diffie-hellman-group-exchange-sha256"
+          ];
+          Ciphers = [
+            "chacha20-poly1305@openssh.com"
+            "aes256-gcm@openssh.com"
+            "aes128-gcm@openssh.com"
+            "aes256-ctr"
+            "aes192-ctr"
+            "aes128-ctr"
+          ];
+          Macs = [
+            "hmac-sha2-512-etm@openssh.com"
+            "hmac-sha2-256-etm@openssh.com"
+            "umac-128-etm@openssh.com"
+            "hmac-sha2-512"
+            "hmac-sha2-256"
+            "umac-128@openssh.com"
+          ];
+
+          # kick out inactive sessions
+          ClientAliveCountMax = 5;
+          ClientAliveInterval = 60;
         };
 
         hostKeys = [
@@ -54,12 +95,11 @@
   flake.modules.homeManager.core =
   { config, lib, ... }:
   let
-    cfg = config.hostSpec.networking.ssh;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
     inherit (config.hostSpec.impermanence) dontBackup;
   in
   {
-    config = lib.mkIf cfg.enable {
+    config = {
       # programs.ssh.identities = [
       #   {
       #     privateKeyFile = "~/.ssh/id_ed25519";

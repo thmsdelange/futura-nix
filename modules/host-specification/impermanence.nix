@@ -32,9 +32,9 @@ in
     {
       options.hostSpec.impermanence = impermanenceOptions;
 
-      config = lib.mkIf (config.hostSpec.disks.amReinstalling or false) {
-        hostSpec.impermanence.backup = "/tmp";
-        hostSpec.impermanence.backupStorage = "/tmp";
+      config.hostSpec.impermanence = lib.mkIf (config.hostSpec.disks.amReinstalling) {
+        backup = "/tmp";
+        backupStorage = "/tmp";
       };
     };
 
@@ -44,9 +44,9 @@ in
       options.hostSpec.impermanence = impermanenceOptions;
 
       # not sure if I should also add this to the home-manager options
-      config = lib.mkIf (config.hostSpec.disks.amReinstalling or false) {
-        hostSpec.impermanence.backup = "/tmp";
-        hostSpec.impermanence.backupStorage = "/tmp";
+      config.hostSpec.impermanence = lib.mkIf (config.hostSpec.disks.amReinstalling) {
+        backup = "/tmp";
+        backupStorage = "/tmp";
       };
     };
 
