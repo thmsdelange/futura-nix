@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.dns-server = 
-  { config, hostConfig, inputs, ... }:
+  { config, lib,  hostConfig, inputs, ... }:
   let
     aghPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.adguardhome or 3003);
     ubPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.unbound or 5335);
@@ -8,6 +8,17 @@
     password = (config.hostSpec.services.adguardhome.${hostConfig.name}.passwd or null);  # this immediately locks you out if you don't have the correct htpasswd setup, see: https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration#password-reset
   in
   {
+    # Let adguardhome manage DNS, disabling systemd-resolved entirely
+    networking.resolvconf = {
+      enable = false;  # Don't manage /etc/resolv.conf via resolved
+    };
+    systemd.services.systemd-resolved.enable = false;
+
+    # Ensure /etc/resolv.conf points somewhere sensible
+    environment.etc."resolv.conf".text = lib.mkForce ''
+      nameserver 127.0.0.1
+    '';
+    
     services.adguardhome = {
       enable = true;
       # mutableSettings = false; # declare all settings in this config rather than in the web UI
@@ -63,12 +74,21 @@
           "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/refs/heads/master/filters/filter_19_Annoyances_Popups/filter.txt"
           "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/refs/heads/master/filters/filter_21_Annoyances_Other/filter.txt"
         ];
-      theme = "dark";
+      theme = "dark"; # important ;)
       };
     };
 
     ### open aghPort to view the web UI without a reverse proxy (so delete later)
     networking.firewall.allowedUDPPorts = [ 53 ];
     networking.firewall.allowedTCPPorts = [ 53 aghPort ];
+
+    # systemd.services.adguardhome.restart = "always";
+    # systemd.services.adguardhome.restartSec = 10;
+
+    # ### the network should be online before we can start adguardhome
+    # systemd.services.adguardhome = {
+    #   after = [ "network-online.target" ];
+    #   wants = [ "network-online.target" ];
+    # };
   };
 }

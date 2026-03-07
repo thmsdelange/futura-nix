@@ -44,6 +44,7 @@
         routes = [
           { Gateway = subnet.gateway; }
         ];
+        linkConfig.RequiredForOnline = true;
       };
     };
   };
