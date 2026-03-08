@@ -21,7 +21,7 @@
           {
             runAs = "root";
             # cmd = "*";             # restrict to nixos-rebuild later
-            users = [ adminUser ]; # TODO: check if works now or: the user with isAdmin=true should get access to the nixos-rebuild command
+            users = [ adminUser ];
             noPass = true; # nopass
             # keepEnv = true;        # optional, preserves environment
           }

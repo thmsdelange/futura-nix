@@ -75,12 +75,10 @@
       };
       users = {
         thms = {
-          name = "Thomas de Lange";
-          email = "thomas-delange@hotmail.com";
+          isAdmin = true;
           authorizedKeys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
           ];
-          isAdmin = true;
         };
       };
     };

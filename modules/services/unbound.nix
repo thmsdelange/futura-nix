@@ -11,9 +11,9 @@
         server = {
           # When only using Unbound as DNS, make sure to replace 127.0.0.1 with your ip address
           # When using Unbound in combination with pi-hole or Adguard, leave 127.0.0.1, and point Adguard to 127.0.0.1:PORT
-          interface = [ "127.0.0.1" ];
+          interface = [ "127.0.0.1" ];# "<Tailnet IP>" ];
           port = ubPort;
-          access-control = [ "127.0.0.1 allow" ];
+          access-control = [ "127.0.0.1 allow" ];# "<Tailnet subnet> allow"];
           # Based on recommended settings in https://docs.pi-hole.net/guides/dns/unbound/#configure-unbound
           harden-glue = true;
           harden-dnssec-stripped = true;

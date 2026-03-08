@@ -16,6 +16,8 @@
 
         # Services
         dns-server
+        tailscale
+        dashboard
       ]
       # Specific Home-Manager modules
       ++ [
@@ -50,6 +52,7 @@
     boot.kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
 
     hostSpec = {
+      isServer = true;
       hasSecrets = true;
       networking.ssh.enable = true;
       users = {
@@ -58,6 +61,16 @@
           authorizedKeys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
           ];
+        };
+      };
+      services = {
+        tailscale = {
+          extraUpFlags = [
+            "--ssh=true"
+            "--reset=true"
+            "--accept-dns=true"
+          ];
+          useRoutingFeatures = "server";
         };
       };
     };

@@ -11,8 +11,8 @@
           enable = true;
           settings = {
             user = {
-              name = adminUser.name;
-              email = adminUser.email;
+              name = adminUser;
+              email = config.hostSpec.users.${adminUser}.email.user;
             };
             branch = {
               autosetuprebase = "always";
