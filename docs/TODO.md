@@ -10,32 +10,32 @@
   - [x] Define work as an aspect?
   - [x] Define user as an aspect
 
-- [ ] Define system core
+- [x] Define system core
 
   - [x] networking
   - [x] ssh
   - [x] keys
-  - [ ] git including github access token
+  - [x] git including github access token
 
 ## Setup futura-secrets
 
 - [x] Import futura-secrets private repo in flake
 - [x] Automate generation of host/user keys
-- [ ] setup sops
+- [x] setup sops
   - [x] host-level and home level sops
   - [x] test with sending keys over to vm
     - [x] decrypt example key --> this does not work because the remote doesn't have the secret file, however when it is deployed from a remote it can decrypt the secrets it needs now!
     - [x] see if necessary to make zpools like etcssh
       - [x] works with zpool!
       - [x] check without making a zpool
-- [ ] rewrite secrets structure: host has users password and ssh keys
-  - [ ] setup creating user secret side
-  - [ ] setup creating user config side
+- [x] rewrite secrets structure: host has users password and ssh keys
+  - [x] setup creating user secret side
+  - [x] setup creating user config side
 
 Probably also here (requires changes in networking and ssh modules amongst others):
 
-- [ ] Manage ssh keys in config (see above)
-- [ ] Setup tailscale in config
+- [x] Manage ssh keys in config (see above)
+- [x] Setup tailscale in config
 
 ## Setup declarative disk paritioning with [disko](https://github.com/nix-community/disko)
 
@@ -74,7 +74,7 @@ Configure one by one
   - [ ] experiment with [Dank Material Shell](https://danklinux.com/) and niri
   - [ ] research possibility to have multiple DE's configured (for switching to un-broken configs on work pc)
 
-## Deployement stuff
+## Deployment stuff
 
 - [ ] Add pre commit checks
 - [x] Make an iso host that can create an installer image with `just iso`
@@ -87,3 +87,44 @@ Configure one by one
 - [ ] setup tailnet
 - [ ] setup services
   - [ ] Add each service to dashboard
+
+# Next steps:
+
+- Build out desktop configuration on continuum
+
+  - [ ] dankmaterialshell + niri
+    - [ ] make continuum vm graphical
+  - important stuff for mrfusion:
+    - [ ] seafile syncing
+    - [ ] obsidian syncing (eventually rewrite to declaring obsidian more)
+    - [ ] onedrive (backup syncing)
+    - [ ] supercomputer scripts
+    - [ ] editor(s)
+      - [ ] at least vscode
+      - [ ] add helix
+    - [ ] winapps (and make it stable this time)
+    - [ ] basic migration of apps:
+      - [ ] email+calendar client
+      - [ ] librewolf (or other browser)
+      - [ ] bitwarden (or other)
+      - [ ] zathura
+      - [ ] evince
+      - [ ] mpv
+      - [ ] feh
+      - [ ] yubioath
+      - [ ] spotify
+      - [ ] libreoffice
+      - [ ] obsidian
+      - [ ] teams (write pkg)
+      - [ ] claude-desktop
+
+- Build out server configuration on twinpines
+
+  - [ ] fix tailscale not able to use dns (apparently)
+  - [ ] improve dashboard
+  - [ ] improve longevity of sd card by writing less stuff
+  - [ ] optimise adguardhome
+
+- Build out server configuration on delorean (+ backup server)
+  - [ ] syncoid/sanoid backups
+  - [ ] opencloud
