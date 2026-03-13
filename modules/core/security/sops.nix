@@ -8,7 +8,10 @@ in
 {
   # hosts level sops
   flake.modules.nixos.core =
-    { config, pkgs, ... }:
+    { config, pkgs, lib, ... }:
+    let
+      hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+    in
     {
       imports = [
         inputs.sops-nix.nixosModules.sops
@@ -16,7 +19,7 @@ in
 
       sops = {
         defaultSopsFile = "${sopsRoot}/sops/shared.yaml";
-        age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+        age.sshKeyPaths = [ "${lib.optionalString hasPersistDir "/persist"}/etc/ssh/ssh_host_ed25519_key" ];
         gnupg.sshKeyPaths = [ ];
       };
 

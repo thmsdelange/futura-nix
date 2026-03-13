@@ -2,10 +2,6 @@
   "version": 1,
   "system": "x86_64-linux",
   "virtualisation": "kvm",
-  "uefi": {
-    "supported": true,
-    "platform_size": 64
-  },
   "hardware": {
     "bios": {
       "apm_info": {
@@ -27,7 +23,7 @@
     },
     "bridge": [
       {
-        "index": 6,
+        "index": 9,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -94,7 +90,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 8,
+        "index": 11,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -161,7 +157,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 10,
+        "index": 13,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -228,7 +224,7 @@
         "module_alias": "pci:v00008086d00002918sv00001AF4sd00001100bc06sc01i00"
       },
       {
-        "index": 11,
+        "index": 14,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -295,7 +291,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 15,
+        "index": 18,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -362,7 +358,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 17,
+        "index": 20,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -429,7 +425,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 19,
+        "index": 22,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -496,7 +492,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 21,
+        "index": 24,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -563,7 +559,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 23,
+        "index": 26,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -618,7 +614,7 @@
         "module_alias": "pci:v00008086d000029C0sv00001AF4sd00001100bc06sc00i00"
       },
       {
-        "index": 25,
+        "index": 28,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -685,7 +681,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 26,
+        "index": 29,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -752,7 +748,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 27,
+        "index": 30,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -819,7 +815,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 29,
+        "index": 32,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -886,7 +882,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 30,
+        "index": 33,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -953,7 +949,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 32,
+        "index": 35,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -1020,7 +1016,7 @@
         "module_alias": "pci:v00001B36d0000000Csv00001B36sd00000000bc06sc04i00"
       },
       {
-        "index": 33,
+        "index": 36,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -1089,8 +1085,8 @@
     ],
     "cdrom": [
       {
-        "index": 44,
-        "attached_to": 7,
+        "index": 47,
+        "attached_to": 10,
         "class_list": [
           "cdrom",
           "scsi",
@@ -1102,7 +1098,7 @@
           "value": 132
         },
         "slot": {
-          "bus": 1,
+          "bus": 0,
           "number": 0
         },
         "base_class": {
@@ -1137,12 +1133,12 @@
         },
         "model": "QEMU DVD-ROM",
         "sysfs_id": "/class/block/sr0",
-        "sysfs_bus_id": "1:0:0:0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1f.2/ata1/host1/target1:0:0/1:0:0:0",
+        "sysfs_bus_id": "0:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1f.2/ata1/host0/target0:0:0/0:0:0:0",
         "unix_device_names": [
           "/dev/cdrom",
           "/dev/disk/by-id/ata-QEMU_DVD-ROM_QM00001",
-          "/dev/disk/by-label/nixos-minimal-26.05-x86_64",
+          "/dev/disk/by-label/nixos-minimal-25.11-x86_64",
           "/dev/disk/by-path/pci-0000:00:1f.2-ata-1",
           "/dev/disk/by-path/pci-0000:00:1f.2-ata-1.0",
           "/dev/disk/by-uuid/1980-01-01-00-00-00-00",
@@ -1292,6 +1288,418 @@
         "fpu_exception": false,
         "cpuid_level": 22,
         "write_protect": false,
+        "tlb_size": 32653,
+        "clflush_size": 64,
+        "cache_alignment": 64,
+        "address_sizes": {
+          "physical": "0x27",
+          "virtual": "0x30"
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "vendor_name": "GenuineIntel",
+        "model_name": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz",
+        "family": 6,
+        "model": 158,
+        "stepping": 9,
+        "features": [
+          "fpu",
+          "vme",
+          "de",
+          "pse",
+          "tsc",
+          "msr",
+          "pae",
+          "mce",
+          "cx8",
+          "apic",
+          "sep",
+          "mtrr",
+          "pge",
+          "mca",
+          "cmov",
+          "pat",
+          "pse36",
+          "clflush",
+          "mmx",
+          "fxsr",
+          "sse",
+          "sse2",
+          "ss",
+          "syscall",
+          "nx",
+          "pdpe1gb",
+          "rdtscp",
+          "lm",
+          "arch_perfmon",
+          "rep_good",
+          "nopl",
+          "xtopology",
+          "cpuid",
+          "tsc_known_freq",
+          "pni",
+          "pclmulqdq",
+          "vmx",
+          "ssse3",
+          "fma",
+          "cx16",
+          "pdcm",
+          "pcid",
+          "sse4_1",
+          "sse4_2",
+          "x2apic",
+          "movbe",
+          "popcnt",
+          "tsc_deadline_timer",
+          "aes",
+          "xsave",
+          "avx",
+          "f16c",
+          "rdrand",
+          "hypervisor",
+          "lahf_lm",
+          "abm",
+          "3dnowprefetch",
+          "cpuid_fault",
+          "pti",
+          "ssbd",
+          "ibrs",
+          "ibpb",
+          "stibp",
+          "tpr_shadow",
+          "flexpriority",
+          "ept",
+          "vpid",
+          "ept_ad",
+          "fsgsbase",
+          "tsc_adjust",
+          "bmi1",
+          "avx2",
+          "smep",
+          "bmi2",
+          "erms",
+          "invpcid",
+          "mpx",
+          "rdseed",
+          "adx",
+          "smap",
+          "clflushopt",
+          "xsaveopt",
+          "xsavec",
+          "xgetbv1",
+          "xsaves",
+          "arat",
+          "vnmi",
+          "umip",
+          "md_clear",
+          "flush_l1d",
+          "arch_capabilities"
+        ],
+        "bugs": [
+          "cpu_meltdown",
+          "spectre_v1",
+          "spectre_v2",
+          "spec_store_bypass",
+          "l1tf",
+          "mds",
+          "swapgs",
+          "srbds",
+          "mmio_stale_data",
+          "retbleed",
+          "bhi",
+          "ibpb_no_ret",
+          "spectre_v2_user",
+          "its"
+        ],
+        "power_management": [
+          ""
+        ],
+        "bogo": 5615,
+        "cache": 16384,
+        "page_size": 4096,
+        "physical_id": 1,
+        "siblings": 1,
+        "cores": 1,
+        "fpu": false,
+        "fpu_exception": false,
+        "cpuid_level": 22,
+        "write_protect": false,
+        "tlb_size": 32653,
+        "clflush_size": 64,
+        "cache_alignment": 64,
+        "address_sizes": {
+          "physical": "0x27",
+          "virtual": "0x30"
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "vendor_name": "GenuineIntel",
+        "model_name": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz",
+        "family": 6,
+        "model": 158,
+        "stepping": 9,
+        "features": [
+          "fpu",
+          "vme",
+          "de",
+          "pse",
+          "tsc",
+          "msr",
+          "pae",
+          "mce",
+          "cx8",
+          "apic",
+          "sep",
+          "mtrr",
+          "pge",
+          "mca",
+          "cmov",
+          "pat",
+          "pse36",
+          "clflush",
+          "mmx",
+          "fxsr",
+          "sse",
+          "sse2",
+          "ss",
+          "syscall",
+          "nx",
+          "pdpe1gb",
+          "rdtscp",
+          "lm",
+          "arch_perfmon",
+          "rep_good",
+          "nopl",
+          "xtopology",
+          "cpuid",
+          "tsc_known_freq",
+          "pni",
+          "pclmulqdq",
+          "vmx",
+          "ssse3",
+          "fma",
+          "cx16",
+          "pdcm",
+          "pcid",
+          "sse4_1",
+          "sse4_2",
+          "x2apic",
+          "movbe",
+          "popcnt",
+          "tsc_deadline_timer",
+          "aes",
+          "xsave",
+          "avx",
+          "f16c",
+          "rdrand",
+          "hypervisor",
+          "lahf_lm",
+          "abm",
+          "3dnowprefetch",
+          "cpuid_fault",
+          "pti",
+          "ssbd",
+          "ibrs",
+          "ibpb",
+          "stibp",
+          "tpr_shadow",
+          "flexpriority",
+          "ept",
+          "vpid",
+          "ept_ad",
+          "fsgsbase",
+          "tsc_adjust",
+          "bmi1",
+          "avx2",
+          "smep",
+          "bmi2",
+          "erms",
+          "invpcid",
+          "mpx",
+          "rdseed",
+          "adx",
+          "smap",
+          "clflushopt",
+          "xsaveopt",
+          "xsavec",
+          "xgetbv1",
+          "xsaves",
+          "arat",
+          "vnmi",
+          "umip",
+          "md_clear",
+          "flush_l1d",
+          "arch_capabilities"
+        ],
+        "bugs": [
+          "cpu_meltdown",
+          "spectre_v1",
+          "spectre_v2",
+          "spec_store_bypass",
+          "l1tf",
+          "mds",
+          "swapgs",
+          "srbds",
+          "mmio_stale_data",
+          "retbleed",
+          "bhi",
+          "ibpb_no_ret",
+          "spectre_v2_user",
+          "its"
+        ],
+        "power_management": [
+          ""
+        ],
+        "bogo": 5615,
+        "cache": 16384,
+        "page_size": 4096,
+        "physical_id": 2,
+        "siblings": 1,
+        "cores": 1,
+        "fpu": false,
+        "fpu_exception": false,
+        "cpuid_level": 22,
+        "write_protect": false,
+        "tlb_size": 32653,
+        "clflush_size": 64,
+        "cache_alignment": 64,
+        "address_sizes": {
+          "physical": "0x27",
+          "virtual": "0x30"
+        }
+      },
+      {
+        "architecture": "x86_64",
+        "vendor_name": "GenuineIntel",
+        "model_name": "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz",
+        "family": 6,
+        "model": 158,
+        "stepping": 9,
+        "features": [
+          "fpu",
+          "vme",
+          "de",
+          "pse",
+          "tsc",
+          "msr",
+          "pae",
+          "mce",
+          "cx8",
+          "apic",
+          "sep",
+          "mtrr",
+          "pge",
+          "mca",
+          "cmov",
+          "pat",
+          "pse36",
+          "clflush",
+          "mmx",
+          "fxsr",
+          "sse",
+          "sse2",
+          "ss",
+          "syscall",
+          "nx",
+          "pdpe1gb",
+          "rdtscp",
+          "lm",
+          "arch_perfmon",
+          "rep_good",
+          "nopl",
+          "xtopology",
+          "cpuid",
+          "tsc_known_freq",
+          "pni",
+          "pclmulqdq",
+          "vmx",
+          "ssse3",
+          "fma",
+          "cx16",
+          "pdcm",
+          "pcid",
+          "sse4_1",
+          "sse4_2",
+          "x2apic",
+          "movbe",
+          "popcnt",
+          "tsc_deadline_timer",
+          "aes",
+          "xsave",
+          "avx",
+          "f16c",
+          "rdrand",
+          "hypervisor",
+          "lahf_lm",
+          "abm",
+          "3dnowprefetch",
+          "cpuid_fault",
+          "pti",
+          "ssbd",
+          "ibrs",
+          "ibpb",
+          "stibp",
+          "tpr_shadow",
+          "flexpriority",
+          "ept",
+          "vpid",
+          "ept_ad",
+          "fsgsbase",
+          "tsc_adjust",
+          "bmi1",
+          "avx2",
+          "smep",
+          "bmi2",
+          "erms",
+          "invpcid",
+          "mpx",
+          "rdseed",
+          "adx",
+          "smap",
+          "clflushopt",
+          "xsaveopt",
+          "xsavec",
+          "xgetbv1",
+          "xsaves",
+          "arat",
+          "vnmi",
+          "umip",
+          "md_clear",
+          "flush_l1d",
+          "arch_capabilities"
+        ],
+        "bugs": [
+          "cpu_meltdown",
+          "spectre_v1",
+          "spectre_v2",
+          "spec_store_bypass",
+          "l1tf",
+          "mds",
+          "swapgs",
+          "srbds",
+          "mmio_stale_data",
+          "retbleed",
+          "bhi",
+          "ibpb_no_ret",
+          "spectre_v2_user",
+          "its"
+        ],
+        "power_management": [
+          ""
+        ],
+        "bogo": 5615,
+        "cache": 16384,
+        "page_size": 4096,
+        "physical_id": 3,
+        "siblings": 1,
+        "cores": 1,
+        "fpu": false,
+        "fpu_exception": false,
+        "cpuid_level": 22,
+        "write_protect": false,
+        "tlb_size": 32653,
         "clflush_size": 64,
         "cache_alignment": 64,
         "address_sizes": {
@@ -1302,8 +1710,8 @@
     ],
     "disk": [
       {
-        "index": 43,
-        "attached_to": 36,
+        "index": 46,
+        "attached_to": 39,
         "class_list": [
           "disk",
           "block_device"
@@ -1355,8 +1763,8 @@
         ]
       },
       {
-        "index": 45,
-        "attached_to": 40,
+        "index": 48,
+        "attached_to": 43,
         "class_list": [
           "disk",
           "block_device"
@@ -1408,8 +1816,8 @@
         ]
       },
       {
-        "index": 46,
-        "attached_to": 41,
+        "index": 49,
+        "attached_to": 44,
         "class_list": [
           "disk",
           "block_device"
@@ -1463,7 +1871,7 @@
     ],
     "graphics_card": [
       {
-        "index": 13,
+        "index": 16,
         "attached_to": 0,
         "class_list": [
           "graphics_card",
@@ -1545,8 +1953,8 @@
     ],
     "hub": [
       {
-        "index": 47,
-        "attached_to": 12,
+        "index": 50,
+        "attached_to": 15,
         "class_list": [
           "usb",
           "hub"
@@ -1567,7 +1975,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.12 xhci-hcd",
+          "name": "Linux 6.19.6 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1577,11 +1985,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "6.19",
           "value": 0
         },
         "serial": "0000:02:00.0",
-        "model": "Linux 6.18.12 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.19.6 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:02.1/0000:02:00.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
@@ -1629,11 +2037,11 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0002d0618dc09dsc00dp01ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0002d0619dc09dsc00dp01ic09isc00ip00in00"
       },
       {
-        "index": 49,
-        "attached_to": 12,
+        "index": 52,
+        "attached_to": 15,
         "class_list": [
           "usb",
           "hub"
@@ -1654,7 +2062,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.18.12 xhci-hcd",
+          "name": "Linux 6.19.6 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1664,11 +2072,11 @@
         },
         "revision": {
           "hex": "0000",
-          "name": "6.18",
+          "name": "6.19",
           "value": 0
         },
         "serial": "0000:02:00.0",
-        "model": "Linux 6.18.12 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.19.6 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:02.1/0000:02:00.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
@@ -1706,12 +2114,12 @@
         "driver_modules": [
           "usbcore"
         ],
-        "module_alias": "usb:v1D6Bp0003d0618dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0619dc09dsc00dp03ic09isc00ip00in00"
       }
     ],
     "memory": [
       {
-        "index": 4,
+        "index": 7,
         "attached_to": 0,
         "class_list": [
           "memory"
@@ -1737,8 +2145,8 @@
     ],
     "mouse": [
       {
-        "index": 48,
-        "attached_to": 47,
+        "index": 51,
+        "attached_to": 50,
         "class_list": [
           "mouse",
           "usb"
@@ -1843,8 +2251,8 @@
     ],
     "network_controller": [
       {
-        "index": 38,
-        "attached_to": 16,
+        "index": 41,
+        "attached_to": 19,
         "class_list": [
           "network_controller"
         ],
@@ -1898,7 +2306,7 @@
     ],
     "network_interface": [
       {
-        "index": 50,
+        "index": 53,
         "attached_to": 0,
         "class_list": [
           "network_interface"
@@ -1920,8 +2328,8 @@
         ]
       },
       {
-        "index": 51,
-        "attached_to": 38,
+        "index": 54,
+        "attached_to": 41,
         "class_list": [
           "network_interface"
         ],
@@ -1963,8 +2371,8 @@
     ],
     "pci": [
       {
-        "index": 9,
-        "attached_to": 25,
+        "index": 12,
+        "attached_to": 28,
         "class_list": [
           "pci",
           "unknown"
@@ -2028,8 +2436,8 @@
         "module_alias": "pci:v00001AF4d00001044sv00001AF4sd00001100bc00scFFi00"
       },
       {
-        "index": 14,
-        "attached_to": 8,
+        "index": 17,
+        "attached_to": 11,
         "class_list": [
           "pci",
           "unknown"
@@ -2093,8 +2501,8 @@
         "module_alias": "pci:v00001AF4d00001045sv00001AF4sd00001100bc00scFFi00"
       },
       {
-        "index": 16,
-        "attached_to": 32,
+        "index": 19,
+        "attached_to": 35,
         "class_list": [
           "pci",
           "unknown"
@@ -2159,8 +2567,8 @@
         "module_alias": "pci:v00001AF4d00001041sv00001AF4sd00001100bc02sc00i00"
       },
       {
-        "index": 20,
-        "attached_to": 26,
+        "index": 23,
+        "attached_to": 29,
         "class_list": [
           "pci",
           "unknown"
@@ -2225,7 +2633,7 @@
         "module_alias": "pci:v00001AF4d00001042sv00001AF4sd00001100bc01sc00i00"
       },
       {
-        "index": 22,
+        "index": 25,
         "attached_to": 0,
         "class_list": [
           "pci",
@@ -2301,8 +2709,8 @@
         "module_alias": "pci:v00008086d00002930sv00001AF4sd00001100bc0Csc05i00"
       },
       {
-        "index": 24,
-        "attached_to": 11,
+        "index": 27,
+        "attached_to": 14,
         "class_list": [
           "pci",
           "unknown"
@@ -2367,8 +2775,8 @@
         "module_alias": "pci:v00001AF4d00001042sv00001AF4sd00001100bc01sc00i00"
       },
       {
-        "index": 28,
-        "attached_to": 27,
+        "index": 31,
+        "attached_to": 30,
         "class_list": [
           "pci",
           "unknown"
@@ -2433,8 +2841,8 @@
         "module_alias": "pci:v00001AF4d00001042sv00001AF4sd00001100bc01sc00i00"
       },
       {
-        "index": 31,
-        "attached_to": 15,
+        "index": 34,
+        "attached_to": 18,
         "class_list": [
           "pci",
           "unknown"
@@ -2501,7 +2909,7 @@
     ],
     "sound": [
       {
-        "index": 18,
+        "index": 21,
         "attached_to": 0,
         "class_list": [
           "sound",
@@ -2569,8 +2977,8 @@
     ],
     "storage_controller": [
       {
-        "index": 5,
-        "attached_to": 29,
+        "index": 8,
+        "attached_to": 32,
         "class_list": [
           "storage_controller",
           "pci"
@@ -2635,7 +3043,7 @@
         "module_alias": "pci:v00001AF4d00001048sv00001AF4sd00001100bc01sc00i00"
       },
       {
-        "index": 7,
+        "index": 10,
         "attached_to": 0,
         "class_list": [
           "storage_controller",
@@ -2714,8 +3122,8 @@
         "module_alias": "pci:v00008086d00002922sv00001AF4sd00001100bc01sc06i01"
       },
       {
-        "index": 36,
-        "attached_to": 24,
+        "index": 39,
+        "attached_to": 27,
         "class_list": [
           "storage_controller"
         ],
@@ -2754,8 +3162,8 @@
         "module_alias": "virtio:d00000002v00001AF4"
       },
       {
-        "index": 40,
-        "attached_to": 20,
+        "index": 43,
+        "attached_to": 23,
         "class_list": [
           "storage_controller"
         ],
@@ -2794,8 +3202,8 @@
         "module_alias": "virtio:d00000002v00001AF4"
       },
       {
-        "index": 41,
-        "attached_to": 28,
+        "index": 44,
+        "attached_to": 31,
         "class_list": [
           "storage_controller"
         ],
@@ -2839,8 +3247,8 @@
     },
     "unknown": [
       {
-        "index": 34,
-        "attached_to": 5,
+        "index": 37,
+        "attached_to": 8,
         "class_list": [
           "unknown"
         ],
@@ -2870,8 +3278,8 @@
         "module_alias": "virtio:d00000008v00001AF4"
       },
       {
-        "index": 35,
-        "attached_to": 14,
+        "index": 38,
+        "attached_to": 17,
         "class_list": [
           "unknown"
         ],
@@ -2901,8 +3309,8 @@
         "module_alias": "virtio:d00000005v00001AF4"
       },
       {
-        "index": 37,
-        "attached_to": 31,
+        "index": 40,
+        "attached_to": 34,
         "class_list": [
           "unknown"
         ],
@@ -2932,8 +3340,8 @@
         "module_alias": "virtio:d00000003v00001AF4"
       },
       {
-        "index": 39,
-        "attached_to": 9,
+        "index": 42,
+        "attached_to": 12,
         "class_list": [
           "unknown"
         ],
@@ -2963,7 +3371,7 @@
         "module_alias": "virtio:d00000004v00001AF4"
       },
       {
-        "index": 42,
+        "index": 45,
         "attached_to": 0,
         "class_list": [
           "unknown"
@@ -3005,8 +3413,8 @@
     ],
     "usb_controller": [
       {
-        "index": 12,
-        "attached_to": 17,
+        "index": 15,
+        "attached_to": 20,
         "class_list": [
           "usb_controller",
           "pci"
@@ -3192,6 +3600,105 @@
       {
         "handle": 1024,
         "socket": "CPU 0",
+        "socket_type": {
+          "hex": "0001",
+          "name": "Other",
+          "value": 1
+        },
+        "socket_populated": true,
+        "manufacturer": "QEMU",
+        "version": "pc-q35-9.2",
+        "part": "",
+        "processor_type": {
+          "hex": "0003",
+          "name": "CPU",
+          "value": 3
+        },
+        "processor_family": {
+          "hex": "00fe",
+          "name": "Other",
+          "value": 254
+        },
+        "processor_status": {
+          "hex": "0001",
+          "name": "Enabled",
+          "value": 1
+        },
+        "clock_ext": 0,
+        "clock_max": 2000,
+        "cache_handle_l1": 0,
+        "cache_handle_l2": 0,
+        "cache_handle_l3": 0
+      },
+      {
+        "handle": 1025,
+        "socket": "CPU 1",
+        "socket_type": {
+          "hex": "0001",
+          "name": "Other",
+          "value": 1
+        },
+        "socket_populated": true,
+        "manufacturer": "QEMU",
+        "version": "pc-q35-9.2",
+        "part": "",
+        "processor_type": {
+          "hex": "0003",
+          "name": "CPU",
+          "value": 3
+        },
+        "processor_family": {
+          "hex": "00fe",
+          "name": "Other",
+          "value": 254
+        },
+        "processor_status": {
+          "hex": "0001",
+          "name": "Enabled",
+          "value": 1
+        },
+        "clock_ext": 0,
+        "clock_max": 2000,
+        "cache_handle_l1": 0,
+        "cache_handle_l2": 0,
+        "cache_handle_l3": 0
+      },
+      {
+        "handle": 1026,
+        "socket": "CPU 2",
+        "socket_type": {
+          "hex": "0001",
+          "name": "Other",
+          "value": 1
+        },
+        "socket_populated": true,
+        "manufacturer": "QEMU",
+        "version": "pc-q35-9.2",
+        "part": "",
+        "processor_type": {
+          "hex": "0003",
+          "name": "CPU",
+          "value": 3
+        },
+        "processor_family": {
+          "hex": "00fe",
+          "name": "Other",
+          "value": 254
+        },
+        "processor_status": {
+          "hex": "0001",
+          "name": "Enabled",
+          "value": 1
+        },
+        "clock_ext": 0,
+        "clock_max": 2000,
+        "cache_handle_l1": 0,
+        "cache_handle_l2": 0,
+        "cache_handle_l3": 0
+      },
+      {
+        "handle": 1027,
+        "socket": "CPU 3",
         "socket_type": {
           "hex": "0001",
           "name": "Other",

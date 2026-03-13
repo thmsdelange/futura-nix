@@ -120,11 +120,12 @@ Configure one by one
 
 - Build out server configuration on twinpines
 
-  - [ ] fix tailscale not able to use dns (apparently)
+  - [x] fix tailscale not able to use dns (apparently **fixed itself**)
   - [ ] improve dashboard
   - [ ] improve longevity of sd card by writing less stuff
   - [ ] optimise adguardhome
 
 - Build out server configuration on delorean (+ backup server)
+  - [ ] I ran into a weird issue regarding a zpool uid changing and therefore it was degraded. Debug this.
   - [ ] syncoid/sanoid backups
   - [ ] opencloud

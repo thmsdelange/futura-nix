@@ -1,3 +1,47 @@
+# Bootstrapping and deploying configurations
+
+## Bootstrapping
+
+Bootstrapping concerns the installation of a "new" target, i.e. it does not have a current `futura-nix` installation we could update.
+
+1. Create the iso which contains basic tools we need to deploy our configuration later.
+
+```
+just iso
+```
+
+2. Install the iso on the target. Either by burning it to a usb or by injecting it in a virtual machine. Burning:
+
+```
+sudo dd if=latest.iso of=/dev/<device> bs=10MB oflag=dsync status=progress
+```
+
+3. Executing the bootstrapping of the new host, therefore must have an entry under `modules/hosts` as well as a valid admin user (hostSpec.users.<user>.isAdmin = true;) that we can deploy to the target.
+
+```
+scripts/futura-bootstrap.sh -n <hostname> -d <IP> -u thms -k ~/.ssh/id_ed25519 --impermanence
+```
+
+assumes `~/.ssh/id_ed25519` is the location of the key that was given access in the iso (to connect to the new host).
+
+> That's it
+
+## Deploying
+
+Deploying concerns updating the target host's configuration. For a local machine, simply run
+
+```
+sudo nixos-rebuild .#<hostname> switch
+```
+
+For remote targets, I use [deploy-rs](https://github.com/serokell/deploy-rs), which is configured based on the host that is to be deployed in the [deploy-rs.nix](https://github.com/thmsdelange/futura-nix/blob/main/modules/flake/deploy-rs.nix)
+
+```
+deploy .#<hostname>
+```
+
+---
+
 ## Phase 0: discover bootstrapping workflow
 
 0. minimal iso with auth ssh keys user, etc.

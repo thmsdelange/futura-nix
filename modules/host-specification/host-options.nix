@@ -32,6 +32,11 @@ let
         It goes without saying that this is a temporary switch and as such sops should be configured prompty.
         '';
     };
+    nixpkgs = lib.mkOption {
+      type = lib.types.str;
+      default = "stable";
+      description = "nixpkgs to use for the host";
+    };
     users = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule ({ ... }: {
         options = {

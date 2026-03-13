@@ -228,7 +228,7 @@ nixos_anywhere_cmd=(
     --post-kexec-ssh-port "$ssh_port" \
     --extra-files "$temp" \
     --flake .#"$target_hostname" \
-    --target-host "$target_user"@"$target_destination"
+    --target-host root@"$target_destination"
 )
 
 # Append flag if user confirms

@@ -46,15 +46,19 @@
       hostSpec = {
         users = {
           thms = {
-            name = "Thomas de Lange";
-            email = "thomas-delange@hotmail.com";
+            isAdmin = true;
             authorizedKeys = [
               "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
             ];
-            isAdmin = true;
           };
         };
       };
+      ### we need root access for nixos-anywhere (this is explicitly not allowed in mkusers.nix and ssh.nix)
+      users.users.root.openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
+      ];
+      services.openssh.settings.PermitRootLogin = lib.mkForce "prohibit-password";
+
 
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -85,16 +89,6 @@
           hybrid-sleep.enable = false;
         };
       };
-
-      # services = {
-      #   qemuGuest.enable = true;
-      #   openssh = {
-      #     enable = true;
-      #     ports = [ 22 ];
-      #     settings.PermitRootLogin = "yes";
-      #     authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
-      #   };
-      # };
 
       services.getty.autologinUser = lib.mkForce "thms";
 

@@ -54,7 +54,6 @@
     hostSpec = {
       isServer = true;
       hasSecrets = true;
-      networking.ssh.enable = true;
       users = {
         thms = {
           isAdmin = true;

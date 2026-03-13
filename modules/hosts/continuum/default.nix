@@ -10,6 +10,7 @@
       [
         # Modules
         core
+        # desktop-niri
         # virtualisation
         # bluetooth
         # desktop
@@ -29,6 +30,7 @@
           home-manager.users.thms = { # TODO: can this be made variable as well?
             imports = with config.flake.modules.homeManager; [
               core
+              desktop-niri
               # desktop
               # dev
               # email
@@ -45,7 +47,7 @@
     nixpkgs = {
       overlays = [
         (final: _prev: {
-          master = import inputs.nixpkgs-master {
+          unstable = import inputs.nixpkgs-unstable {
             inherit (final) config system;
           };
         })
@@ -53,9 +55,8 @@
     };
 
     hostSpec = {
-      hasSecrets = false;
+      hasSecrets = true;
       isVM = true;
-      networking.ssh.enable = true;
       disks = {
         zfs = {
           enable = true;
