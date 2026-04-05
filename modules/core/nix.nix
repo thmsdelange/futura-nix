@@ -1,7 +1,8 @@
 {
   flake.modules.nixos.core =
-    { pkgs, config, ... }:
+    { pkgs, config, lib, ... }:
     let
+      hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
       inherit (config.hostSpec.impermanence) dontBackup;
     in
     {
@@ -43,7 +44,7 @@
           tarball-ttl = 60 * 60 * 24;
         };
       };
-      environment.persistence."${dontBackup}".directories = [ "/root/.local/share/nix" ];
+      environment.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ "/root/.local/share/nix" ];
       # FIXME:
       # mkIf (hasPersistDir) { environment.persistence."/persist".directories = ["/root/.local/share/nix"]; };
     };

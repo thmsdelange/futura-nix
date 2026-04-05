@@ -53,7 +53,7 @@
 
       # Core features
       enableSystemMonitoring = true;     # System monitoring widgets (dgop)
-      dgop.package = inputs.dgop.packages.${pkgs.system}.default;
+      dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
       enableVPN = true;                  # VPN management widget
       enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
       enableAudioWavelength = false;      # Audio visualizer (cava)

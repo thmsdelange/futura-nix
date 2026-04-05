@@ -129,3 +129,4 @@ Configure one by one
   - [ ] I ran into a weird issue regarding a zpool uid changing and therefore it was degraded. Debug this.
   - [ ] syncoid/sanoid backups
   - [ ] opencloud
+  - [ ] readme package

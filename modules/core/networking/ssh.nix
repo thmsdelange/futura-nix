@@ -106,7 +106,7 @@
       #     publicKeyFile  = "~/.ssh/id_ed25519.pub";
       #   }
       # ];
-      home.persistence."${dontBackup}".directories = [ ".ssh" ];
+      home.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ ".ssh" ];
     };
   };
   

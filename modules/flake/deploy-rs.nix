@@ -23,7 +23,7 @@
       deploy.nodes = lib.mapAttrs' (
         hostname: nixosConfiguration:
         let
-          inherit (nixosConfiguration.config.nixpkgs.hostPlatform) system;
+          inherit (nixosConfiguration.pkgs.stdenv.hostPlatform) system;
           adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) nixosConfiguration.config.hostSpec.users));
           sshPort = (nixosConfiguration.config.hostSpec.networking.ports.${hostname}.tcp.ssh or 22);
           networkingSecrets = nixosConfiguration.config.hostSpec.networking or {};
@@ -36,7 +36,7 @@
           name = hostname;
           value = {
             inherit hostname;
-            fastConnection = false;
+            fastConnection = hostname == "twinpines";
             profiles.system = {
               sshUser = adminUser;
               sshOpts = [
@@ -45,7 +45,7 @@
               ];
               user = "root";
               sudo = "doas -u";
-              remoteBuild = false;
+              remoteBuild = hostname != "twinpines";
               confirmTimeout = 300;
               path = inputs.deploy-rs.lib.${system}.activate.nixos nixosConfiguration;
             };

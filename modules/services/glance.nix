@@ -165,9 +165,11 @@
     ### TODO: eventually move to root dir when I don't have other servers fighting for the root dir (DRA30)
     services.caddy.virtualHosts."home.${domain}" = {
       extraConfig = ''
+        import blackholeCrawlers
         reverse_proxy 127.0.0.1:${builtins.toString glPort}
       '';
     };
+    hostSpec.services.adguardhome.splitHorizonSubdomains = [ "home" ];
 	};
 }
 

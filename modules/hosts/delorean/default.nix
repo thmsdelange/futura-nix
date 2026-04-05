@@ -4,7 +4,7 @@
   ...
 }:
 {
-  flake.modules.nixos.host-twinpines = 
+  flake.modules.nixos.host-delorean = 
   { pkgs, lib, ... }:
   {
     imports =
@@ -17,8 +17,11 @@
         # Services
         dns-server
         share-split-horizon
+        pocket-id
         tailscale
-        dashboard
+        scrutiny
+        gaggimate
+        # dashboard
       ]
       # Specific Home-Manager modules
       ++ [
@@ -32,29 +35,26 @@
         }
       ];
 
-    # I would like to make this stuff a bit cleaner. Would be nice if this can be a TODO(hostSpec) option (stable|unstable|master)
-    # nixpkgs = {
-    #   overlays = [
-    #     (final: _prev: {
-    #       stable = import inputs.nixpkgs-stable {
-    #         inherit (final) config system;
-    #       };
-    #     })
-    #   ];
-    # };
-
-    # TODO: hostSpec option boot.systemd/rpi
-    boot.loader = {
-      grub.enable = false;
-      systemd-boot.enable = lib.mkForce false;
-      efi.canTouchEfiVariables = lib.mkForce false;
-      generic-extlinux-compatible.enable = true;
-    };
-    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
-
     hostSpec = {
-      isServer = true;
       hasSecrets = true;
+      isVM = true;
+      disks = {
+        zfs = {
+          enable = true;
+          hostID = "501eb87a";
+          root = {
+            disk1 = "sda";
+            reservation = "10G";
+            impermanenceRoot = true;
+          };
+          # storage = {
+          #   enable = true;
+          #   disks = [ "vdb" "vdc" ];
+          #   reservation = "10G";
+          #   mirror = true;
+          # };
+        };
+      };
       users = {
         thms = {
           isAdmin = true;
@@ -76,13 +76,5 @@
     };
 
     facter.reportPath = ./facter.json;
-    fileSystems."/" =
-      { device = "/dev/disk/by-uuid/44444444-4444-4444-8888-888888888888";
-        fsType = "ext4";
-      };
-
-    swapDevices = [
-      { device = "/swapfile"; size = 1024; }
-    ];
   };
 }

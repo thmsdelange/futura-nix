@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.shell =
-  { lib, pkgs, config, ... }: 
+  { lib, pkgs, config, ... }:
   {
     programs.zsh = {
       enable = true; # Enable zsh as the default shell
@@ -39,6 +39,10 @@
     pkgs,
     ...
   }:
+  let
+    hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+    inherit (config.hostSpec.impermanence) dontBackup;
+  in
   {
     programs.fzf.enable = true;
     programs.zsh = {
@@ -69,8 +73,7 @@
 
       history = {
         size = 10000;
-        # path = "${config.xdg.dataHome}/zsh/history";
-        path = "/home/thms/.config/zsh/history"; # TODO: move to relevant persist dir
+        path = "${config.xdg.configHome}/zsh/history"; # TODO: move to relevant persist dir
       };
 
       shellAliases = {
@@ -80,5 +83,6 @@
         # la = "lsd -lah --group-dirs first";
       };
     };
+    home.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ ".config/zsh/history" ];
   };
 }

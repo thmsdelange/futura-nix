@@ -90,6 +90,23 @@ let
     services = lib.mkOption {
       type = lib.types.submodule ({ ... }: {
         options = {
+          adguardhome = {
+            splitHorizonSubdomains = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [];
+              description = "Subdomains to add to adguardhome list of split horizon subdomains";
+            };
+            sharedSplitHorizonSubdomains = lib.mkOption {
+              type = lib.types.listOf (lib.types.submodule {
+                options = {
+                  subdomain = lib.mkOption { type = lib.types.str; };
+                  ip = lib.mkOption { type = lib.types.str; };
+                  tailip = lib.mkOption { type = lib.types.str; };
+                };
+              });
+              default = [];
+            };
+          };
           ### tailscale is an integral part of this configuration. I'm using the module designed by @yomaq
           tailscale = {
             extraUpFlags = lib.mkOption {
@@ -134,6 +151,22 @@ let
               description = ''
                 allow you to specify a key, or set null to disable
               '';
+            };
+          };
+          caddy = {
+            pocketIdApplications = lib.mkOption {
+              type = lib.types.attrsOf (
+                lib.types.submodule {
+                  options = {
+                    subdomain = lib.mkOption {
+                      type = lib.types.str;
+                      description = "Subdomain of the proxied service";
+                    };
+                  };
+                }
+              );
+              default = { };
+              description = "Applications to protect with Pocket ID OIDC via caddy-security";
             };
           };
         };

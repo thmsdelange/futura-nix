@@ -16,7 +16,6 @@
     host = if hostInSecrets then subnet.hosts.${hostName} else null;
     domain = networkingSecrets.domain;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
-
     inherit (config.hostSpec.impermanence) dontBackup;
   in
   {
@@ -79,13 +78,13 @@
               # { domain = "example.internal"; answer = "192.168.1.10"; }
             ];
         };
-        ### user rules to enable split-horizon dns. See this wonderful explanation why: https://burakberk.dev/split-horizon-dns-on-adguard-one-domain-two-networks-two-ip-addresses/
-        user_rules = [ #TODO: programatically add these in their context (e.g. when adding a service to caddy)
-          "||adguard.${domain}^$dnsrewrite=NOERROR;A;${host.ip},client=${subnet.ip}/${toString subnet.prefixLength}"
-          "||adguard.${domain}^$dnsrewrite=NOERROR;A;${host.tailip},client=100.0.0.0/8"
-          "||home.${domain}^$dnsrewrite=NOERROR;A;${host.ip},client=${subnet.ip}/${toString subnet.prefixLength}"
-          "||home.${domain}^$dnsrewrite=NOERROR;A;${host.tailip},client=100.0.0.0/8"
-        ];
+        user_rules =
+          lib.concatMap (entry: [
+            "||${entry.subdomain}.${domain}^$dnsrewrite=NOERROR;A;${entry.ip},client=127.0.0.1"
+            "||${entry.subdomain}.${domain}^$dnsrewrite=NOERROR;A;${entry.ip},client=${subnet.ip}/${toString subnet.prefixLength}"
+            "||${entry.subdomain}.${domain}^$dnsrewrite=NOERROR;A;${entry.tailip},client=100.0.0.0/8"
+            "||${entry.subdomain}.${domain}^$dnsrewrite=NOERROR;A;${entry.ip},client=${entry.tailip}"
+          ]) config.hostSpec.services.adguardhome.sharedSplitHorizonSubdomains;
         filters = map(url: { enabled = true; url = url; }) [
           "https://raw.githubusercontent.com/AdguardTeam/HostlistsRegistry/refs/heads/main/filters/general/filter_24_1Hosts_Lite/filter.txt"
           "https://raw.githubusercontent.com/AdguardTeam/HostlistsRegistry/refs/heads/main/filters/other/filter_7_SmartTVBlocklist/filter.txt"
@@ -107,13 +106,20 @@
     networking.firewall.allowedTCPPorts = [ 53 ];
 
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {
-      directories = [ "/var/lib/AdGuardHome" ];
+      directories = [ 
+        "/var/lib/private/AdGuardHome"
+        "/var/log/AdGuardHome"
+      ];
     };
+    systemd.tmpfiles.rules = lib.mkIf hasPersistDir [
+      "d /var/lib/private 0700 root root -"
+    ];
 
-    services.caddy.virtualHosts."adguard.${domain}" = {
+    services.caddy.virtualHosts."adguard-${hostName}.${domain}" = {
       extraConfig = ''
         reverse_proxy 127.0.0.1:${builtins.toString aghPort}
       '';
     };
+    hostSpec.services.adguardhome.splitHorizonSubdomains = [ "adguard-${hostName}" ];
   };
 }
