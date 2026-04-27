@@ -19,6 +19,7 @@
         share-split-horizon
         pocket-id
         tailscale
+        opencloud
         scrutiny
         gaggimate
         # dashboard
@@ -37,10 +38,10 @@
 
     hostSpec = {
       hasSecrets = true;
-      isVM = true;
+      hasZfs = true;
+      hasZfsStorage = false;
       disks = {
         zfs = {
-          enable = true;
           hostID = "501eb87a";
           root = {
             disk1 = "sda";
@@ -48,7 +49,6 @@
             impermanenceRoot = true;
           };
           # storage = {
-          #   enable = true;
           #   disks = [ "vdb" "vdc" ];
           #   reservation = "10G";
           #   mirror = true;

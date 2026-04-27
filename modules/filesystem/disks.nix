@@ -17,6 +17,7 @@
     }:
     let
       cfg = config.hostSpec.disks;
+      inherit (config.hostSpec) hasZfs hasZfsStorage;
       inherit (config.hostSpec.impermanence) dontBackup;
       inherit (config.networking) hostName;
     in
@@ -51,7 +52,7 @@
             ];
           };
         })
-        (lib.mkIf cfg.zfs.enable {
+        (lib.mkIf hasZfs {
           networking.hostId = cfg.zfs.hostID;
           environment.systemPackages = [ pkgs.zfs-prune-snapshots ];
           boot = {
@@ -67,9 +68,7 @@
               "zfs"
             ];
             zfs = {
-              devNodes = if config.hostSpec.isVM # see: https://discourse.nixos.org/t/zfs-with-disko-faluire-to-import-zfs-pool/61988/6
-              then "/dev/disk/by-uuid"
-              else "/dev/disk/by-id/";
+              devNodes = "/dev/disk/by-uuid";
               forceImportAll = true;
               requestEncryptionCredentials = true;
             };
@@ -86,10 +85,10 @@
             };
           };
         })
-        (lib.mkIf cfg.zfs.enable {
+        (lib.mkIf hasZfs {
           disko.devices = {
             disk = lib.mkMerge [
-              (lib.mkIf (cfg.zfs.storage.enable && !cfg.amReinstalling) (
+              (lib.mkIf (hasZfsStorage && !cfg.amReinstalling) (
                 lib.mkMerge (
                   map (diskname: {
                     "${diskname}" = {
@@ -271,7 +270,7 @@
                   };
                 };
               };
-              zstorage = lib.mkIf (cfg.zfs.storage.enable && !cfg.amReinstalling) {
+              zstorage = lib.mkIf (hasZfsStorage && !cfg.amReinstalling) {
                 type = "zpool";
                 mode = lib.mkIf (cfg.zfs.storage.mirror) "mirror";
                 rootFsOptions = {

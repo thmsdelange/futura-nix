@@ -6,6 +6,7 @@
       zip
       unzip
       wget
+      jq
     ];
   };
 }

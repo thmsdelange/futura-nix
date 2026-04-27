@@ -30,6 +30,18 @@ in
         "tokens/nix-access-tokens" = {
           sopsFile = "${sopsRoot}/sops/shared.yaml";
         };
+        "smtp/host" = {
+          sopsFile = "${sopsRoot}/sops/shared.yaml";
+        };
+        "smtp/user" = {
+          sopsFile = "${sopsRoot}/sops/shared.yaml";
+        };
+        "smtp/port" = {
+          sopsFile = "${sopsRoot}/sops/shared.yaml";
+        };
+        "smtp/password" = {
+          sopsFile = "${sopsRoot}/sops/shared.yaml";
+        };
       };
 
       environment.systemPackages = with pkgs; [

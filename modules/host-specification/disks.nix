@@ -35,10 +35,6 @@ let
       };
     };
     zfs = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-      };
       hostID = lib.mkOption {
         type = lib.types.str;
         default = "";
@@ -79,10 +75,6 @@ let
         };
       };
       storage = {
-        enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-        };
         luks-encrypt = lib.mkOption {
           type = lib.types.bool;
           default = false;

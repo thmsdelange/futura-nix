@@ -20,19 +20,38 @@
   in
 	{
     sops.secrets = lib.mkIf hasSecrets {
-			"services/pocket-id/env-file" = {
+			"services/pocket-id/encryption-key" = {
 				sopsFile = "${sopsRoot}/sops/hosts/${hostName}.yaml";
 			};
 		};
 
+    sops.templates."pid-env" = lib.mkIf hasSecrets {
+      content = ''
+        ENCRYPTION_KEY=${config.sops.placeholder."services/pocket-id/encryption-key"}
+        ### The below was not picked up:
+        EMAIL_ONE_TIME_ACCESS_AS_ADMIN_ENABLED=true
+        EMAIL_VERIFICATION_ENABLED=true
+        SMTP_HOST=${config.sops.placeholder."smtp/host"}
+        SMTP_PORT=${config.sops.placeholder."smtp/port"}
+        SMTP_FROM=admin@${domain}
+        SMTP_USER=${config.sops.placeholder."smtp/user"}
+        SMTP_PASSWORD=${config.sops.placeholder."smtp/password"}
+        SMTP_TLS=StartTLS
+      '';
+    };
+
     services.pocket-id = {
       enable = true;
+      package = pkgs.unstable.pocket-id;
       settings = {
-        APP_URL = "https://id.${domain}";
-        TRUST_PROXY = true;
-        ANALYTICS_DISABLED = true;
+        PORT = pidPort;
+        HOST = "127.0.0.1";
+        APP_URL="https://id.${domain}";
+        EMAILS_VERIFIED=false;
+        TRUST_PROXY=true;
+        ANALYTICS_DISABLED=true;
       };
-      environmentFile = if hasSecrets then config.sops.secrets."services/pocket-id/env-file".path else "/dev/null";
+      environmentFile = if hasSecrets then config.sops.templates."pid-env".path else "/dev/null";
     };
 
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {

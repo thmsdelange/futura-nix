@@ -18,7 +18,7 @@
 
 		services.tailscale = {
 			enable = true;
-			package = pkgs.tailscale; # FIXME: can't get unstable to work now: pkgs.unstable.tailscale;
+			package = pkgs.unstable.tailscale;
 			authKeyFile = if hasSecrets then config.sops.secrets."services/tailscale/ts-auth-key".path else cfg.authKeyFile; # TODO: only needed for bootstrap?
 			extraUpFlags = cfg.extraUpFlags;
 			useRoutingFeatures = cfg.useRoutingFeatures;

@@ -33,11 +33,11 @@
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {
       hideMounts = true;
       directories = [ 
-        # "/var/lib/scrutiny"
+        "/var/lib/private/scrutiny"
       ];
     };
     # systemd.tmpfiles.rules = lib.mkIf hasPersistDir [
-    #   "d /var/lib/pocket-id 0750 pocket-id pocket-id -"
+    #   "d /var/lib/private 0750 root root -"
     # ];
 
     hostSpec.services.caddy.pocketIdApplications."scrutiny" = { subdomain = "disks"; };

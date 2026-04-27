@@ -57,9 +57,10 @@
     hostSpec = {
       hasSecrets = true;
       isVM = true;
+      hasZfs = true;
+      hasZfsStorage = true;
       disks = {
         zfs = {
-          enable = true;
           hostID = "7bb8bc8a";
           root = {
             disk1 = "vda";
@@ -67,7 +68,6 @@
             impermanenceRoot = true;
           };
           storage = {
-            enable = true;
             disks = [ "vdb" "vdc" ];
             reservation = "10G";
             mirror = true;

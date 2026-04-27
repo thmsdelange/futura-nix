@@ -73,7 +73,8 @@
 
       history = {
         size = 10000;
-        path = "${config.xdg.configHome}/zsh/history"; # TODO: move to relevant persist dir
+        # path = "$HOME/.config/zsh/.zsh_history";
+        path = "${config.xdg.configHome}/zsh/.zsh_history"; # TODO: move to relevant persist dir
       };
 
       shellAliases = {
@@ -83,6 +84,13 @@
         # la = "lsd -lah --group-dirs first";
       };
     };
-    home.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ ".config/zsh/history" ];
+    home.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ ".config/zsh" ];
+    # home.persistence."/persist" = {
+    #   directories = [
+    #     ".config/zsh"
+    #     ".ssh"
+    #   ];
+    # };
+    # home.persistence."${dontBackup}".directories = [ ".config/zsh" ];
   };
 }

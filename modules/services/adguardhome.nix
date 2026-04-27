@@ -1,6 +1,6 @@
 {
   flake.modules.nixos.dns-server = 
-  { config, lib, hostConfig, inputs, ... }:
+  { pkgs, config, lib, hostConfig, inputs, ... }:
   let
     aghPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.adguardhome or 3003);
     ubPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.unbound or 5335);
@@ -32,6 +32,7 @@
     
     services.adguardhome = {
       enable = true;
+      package = pkgs.unstable.adguardhome;
       # mutableSettings = false; # declare all settings in this config rather than in the web UI
       # You can select any ip and port, just make sure to open firewalls where needed
       host = "127.0.0.1";

@@ -45,7 +45,5 @@
         };
       };
       environment.persistence."${dontBackup}".directories = lib.mkIf hasPersistDir [ "/root/.local/share/nix" ];
-      # FIXME:
-      # mkIf (hasPersistDir) { environment.persistence."/persist".directories = ["/root/.local/share/nix"]; };
     };
 }

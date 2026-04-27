@@ -6,8 +6,9 @@
       plugins = [ 
         "github.com/caddy-dns/cloudflare@v0.2.3"
         "github.com/greenpau/caddy-security@v1.1.56"
+        "pkg.jsn.cam/caddy-defender@v0.10.0"
       ];
-      hash = "sha256-WqtjfB/29jxr9OewHN0R3QTU8vkSVDv21krO62emGmQ=";
+      hash = "sha256-D+tnqIKvFkyVKLIrEb1+gE9YWKrDMcfVRLsmGUdPRfs=";
     }).overrideAttrs
       (old: {
         # Patch token validation regex to accept cfut_/cfat_ tokens (>50 chars).
