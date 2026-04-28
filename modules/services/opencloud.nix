@@ -43,7 +43,6 @@
         # discard opencloud oidc
         OC_EXCLUDE_RUN_SERVICES=idp
         OC_OIDC_ISSUER=https://id.${domain}
-        # OC_BASE_DATA_PATH=${if hasPersistDir then "${backupStorage}/opencloud" else "/mnt/opencloud"};
         PROXY_USER_OIDC_CLAIM=preferred_username
         PROXY_USER_CS3_CLAIM=username
         GRAPH_USERNAME_MATCH=none
@@ -109,11 +108,16 @@
       address = "127.0.0.1";
       port = ocPort;
       environmentFile = lib.mkIf hasSecrets config.sops.templates."oc-env".path;
-      environment = lib.mkIf (!hasSecrets) {
-        PROXY_TLS = "false";
-        OC_INSECURE = "true";
-        INITIAL_ADMIN_PASSWORD = "super-secret-password";
-      };
+      environment = lib.mkMerge [
+        {
+          OC_BASE_DATA_PATH=if hasPersistDir then "${backupStorage}/opencloud" else "/mnt/opencloud";
+        }
+        (lib.mkIf (!hasSecrets) {
+          PROXY_TLS = "false";
+          OC_INSECURE = "true";
+          INITIAL_ADMIN_PASSWORD = "super-secret-password";
+        })
+      ];
       settings = {
         proxy = {
           csp_config_file_location = "/etc/opencloud/csp.yaml";
@@ -234,6 +238,11 @@
     # systemd.tmpfiles.rules = lib.mkIf hasPersistDir [
     #   "d /var/lib/private 0700 root root -"
     # ];
+
+    ### needed for non-standard storage location
+    systemd.services.opencloud.serviceConfig.ReadWritePaths = [
+      "/storage"
+    ];
 
     systemd.services.opencloud.restartTriggers = [
       config.environment.etc."opencloud/csp.yaml".source

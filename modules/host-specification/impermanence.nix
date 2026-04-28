@@ -24,6 +24,11 @@ let
       default = "/persist";
       description = "The persistent directory to not backup";
     };
+    dontBackupStorage = lib.mkOption {
+      type = lib.types.str;
+      default = "/storage";
+      description = "The persistent directory to not backup";
+    };
   };
 in
 {

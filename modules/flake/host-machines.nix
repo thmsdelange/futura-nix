@@ -33,8 +33,9 @@ let
       lib.mapAttrs (name: module:
         let spec = getHostSpec name module; in {
           hostName = lib.removePrefix prefix name;
-          hasZfs = spec.hasZfs;
-          hasStorage = spec.hasZfsStorage;
+          hasZfs = spec.disks.zfs.enable;
+          hasStorage = spec.disks.zfs.storage.enable;
+          hasNvme = spec.disks.zfs.nvme.enable;
         }
       ) hostModules
     )

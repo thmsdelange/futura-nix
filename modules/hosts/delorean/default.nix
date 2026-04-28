@@ -38,21 +38,20 @@
 
     hostSpec = {
       hasSecrets = true;
-      hasZfs = true;
-      hasZfsStorage = false;
       disks = {
         zfs = {
+          enable = true;
           hostID = "501eb87a";
           root = {
             disk1 = "sda";
             reservation = "10G";
             impermanenceRoot = true;
           };
-          # storage = {
-          #   disks = [ "vdb" "vdc" ];
-          #   reservation = "10G";
-          #   mirror = true;
-          # };
+          storage = {
+          enable = true;
+            disks = [ "sdb" ];
+            reservation = "10G";
+          };
         };
       };
       users = {

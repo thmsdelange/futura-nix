@@ -35,6 +35,11 @@ let
       };
     };
     zfs = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Whether this host has a ZFS root pool";
+      };
       hostID = lib.mkOption {
         type = lib.types.str;
         default = "";
@@ -75,6 +80,41 @@ let
         };
       };
       storage = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Whether this host has a ZFS storage pool (zstorage)";
+        };
+        luks-encrypt = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+        zfs-encrypt = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+        };
+        disks = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+          description = "device names";
+        };
+        reservation = lib.mkOption {
+          type = lib.types.str;
+          default = "20GiB";
+          description = "zfs reservation";
+        };
+        mirror = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "mirror the zfs pool";
+        };
+      };
+      nvme = {
+        enable = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Whether this host has a ZFS NVMe pool (znvme)";
+        };
         luks-encrypt = lib.mkOption {
           type = lib.types.bool;
           default = false;

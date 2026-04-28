@@ -32,16 +32,6 @@ let
         It goes without saying that this is a temporary switch and as such sops should be configured prompty.
         '';
     };
-    hasZfs = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether this host has ZFS, used for disko and syncoid client aggregation";
-    };
-    hasZfsStorage = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether this host has ZFS storage, used for disko syncoid client aggregation";
-    };
     nixpkgs = lib.mkOption {
       type = lib.types.str;
       default = "stable";

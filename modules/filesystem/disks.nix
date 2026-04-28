@@ -17,7 +17,9 @@
     }:
     let
       cfg = config.hostSpec.disks;
-      inherit (config.hostSpec) hasZfs hasZfsStorage;
+      hasZfs = config.hostSpec.disks.zfs.enable;
+      hasZfsStorage = config.hostSpec.disks.zfs.storage.enable;
+      hasZfsNvme = config.hostSpec.disks.zfs.nvme.enable;
       inherit (config.hostSpec.impermanence) dontBackup;
       inherit (config.networking) hostName;
     in
@@ -121,6 +123,41 @@
                       };
                     };
                   }) cfg.zfs.storage.disks
+                )
+              ))
+              (lib.mkIf (hasZfsNvme && !cfg.amReinstalling) (
+                lib.mkMerge (
+                  map (diskname: {
+                    "${diskname}" = {
+                      type = "disk";
+                      device = "/dev/${diskname}";
+                      content = {
+                        type = "gpt";
+                        partitions = {
+                          luks = lib.mkIf cfg.zfs.nvme.luks-encrypt {
+                            size = "100%";
+                            content = {
+                              type = "luks";
+                              name = "stgcrpt${diskname}";
+                              settings.allowDiscards = true;
+                              passwordFile = "/tmp/secret.key";
+                              content = {
+                                type = "zfs";
+                                pool = "zfast";
+                              };
+                            };
+                          };
+                          notluks = lib.mkIf (!cfg.zfs.nvme.luks-encrypt) {
+                            size = "100%";
+                            content = {
+                              type = "zfs";
+                              pool = "zfast";
+                            };
+                          };
+                        };
+                      };
+                    };
+                  }) cfg.zfs.nvme.disks
                 )
               ))
               ({
@@ -301,6 +338,7 @@
                     type = "zfs_fs";
                     mountpoint = "/storage";
                     options = {
+                      mountpoint = "legacy";
                       atime = "off";
                       canmount = "on";
                       "com.sun:auto-snapshot" = "false";
@@ -310,6 +348,7 @@
                     type = "zfs_fs";
                     mountpoint = "/storage/save";
                     options = {
+                      mountpoint = "legacy";
                       atime = "off";
                       canmount = "on";
                       "com.sun:auto-snapshot" = "false";
@@ -318,8 +357,8 @@
                   backups =
                     lib.mkIf
                       (
-                        config ? inventory.hosts."${config.networking.hostName}".syncoidisBackupServer
-                        && config.inventory.hosts."${config.networking.hostName}".syncoidisBackupServer
+                        config ? hostSpec.services.syncoid.isBackupServer
+                        && config.hostSpec.services.syncoid.isBackupServer
                       )
                       {
                         type = "zfs_fs";
@@ -330,6 +369,55 @@
                           "com.sun:auto-snapshot" = "false";
                         };
                       };
+                };
+              };
+              zfast = lib.mkIf (hasZfsNvme && !cfg.amReinstalling) {
+                type = "zpool";
+                mode = lib.mkIf (cfg.zfs.nvme.mirror) "mirror";
+                rootFsOptions = {
+                  canmount = "off";
+                  checksum = "edonr";
+                  compression = "zstd";
+                  dnodesize = "auto";
+                  mountpoint = "none";
+                  normalization = "formD";
+                  relatime = "on";
+                  "com.sun:auto-snapshot" = "false";
+                };
+                options = {
+                  ashift = "12";
+                  autotrim = "on";
+                };
+                datasets = {
+                  # zfs uses cow free space to delete files when the disk is completely filled
+                  reserved = {
+                    options = {
+                      canmount = "off";
+                      mountpoint = "none";
+                      reservation = "${cfg.zfs.nvme.reservation}";
+                    };
+                    type = "zfs_fs";
+                  };
+                  fast = {
+                    type = "zfs_fs";
+                    mountpoint = "/fast";
+                    options = {
+                      mountpoint = "legacy";
+                      atime = "off";
+                      canmount = "on";
+                      "com.sun:auto-snapshot" = "false";
+                    };
+                  };
+                  persistSave = {
+                    type = "zfs_fs";
+                    mountpoint = "/fast/save";
+                    options = {
+                      mountpoint = "legacy";
+                      atime = "off";
+                      canmount = "on";
+                      "com.sun:auto-snapshot" = "false";
+                    };
+                  };
                 };
               };
             };

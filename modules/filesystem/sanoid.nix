@@ -1,8 +1,13 @@
 {
   flake.modules.nixos.core = 
   { config, lib, ... }:
+  let
+    hasZfs = config.hostSpec.disks.zfs.enable;
+    hasZfsStorage = config.hostSpec.disks.zfs.storage.enable;
+    hasZfsNvme = config.hostSpec.disks.zfs.nvme.enable;
+  in
   {
-    config = lib.mkIf config.hostSpec.hasZfs {
+    config = lib.mkIf hasZfs {
       services.sanoid = {
         enable = true;
         templates = {
@@ -19,9 +24,13 @@
           "zroot/persist".useTemplate = [ "default" ];
           "zroot/persistSave".useTemplate = [ "default" ];
         }
-        // lib.optionalAttrs (config.hostSpec.hasZfsStorage && !config.hostSpec.disks.amReinstalling) {
+        // lib.optionalAttrs (hasZfsStorage && !config.hostSpec.disks.amReinstalling) {
           "zstorage/storage".useTemplate = [ "default" ];
           "zstorage/persistSave".useTemplate = [ "default" ];
+        }
+        // lib.optionalAttrs (hasZfsNvme && !config.hostSpec.disks.amReinstalling) {
+          "zfast/storage".useTemplate = [ "default" ];
+          "zfast/persistSave".useTemplate = [ "default" ];
         };
       };
     };

@@ -7,6 +7,7 @@
       unzip
       wget
       jq
+      rclone
     ];
   };
 }
