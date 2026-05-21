@@ -1,7 +1,7 @@
 # Networking config which sets a static ip according to hostSpec (inherited from secrets) and disables ipv6
 {
   flake.modules.nixos.core = 
-  { hostConfig, config, lib, ... }:
+  { hostConfig, config, lib, pkgs, ... }:
   let
     hostName = hostConfig.name;
     inherit (config.hostSpec) hasSecrets;

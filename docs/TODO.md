@@ -83,8 +83,8 @@ Configure one by one
 
 ## Homelab
 
-- [ ] setup delorean host
-- [ ] setup tailnet
+- [x] setup delorean host
+- [x] setup tailnet
 - [ ] setup services
   - [ ] Add each service to dashboard
 
@@ -126,7 +126,11 @@ Configure one by one
   - [ ] optimise adguardhome
 
 - Build out server configuration on delorean (+ backup server)
-  - [ ] I ran into a weird issue regarding a zpool uid changing and therefore it was degraded. Debug this.
+  - [x] I ran into a weird issue regarding a zpool uid changing and therefore it was degraded. Debug this.
   - [ ] syncoid/sanoid backups
-  - [ ] opencloud
+  - [x] opencloud
+  - [x] immich
+  - [ ] stirling-pdf
+  - [ ] nixflix
+  - [ ] CAAL
   - [ ] readme package

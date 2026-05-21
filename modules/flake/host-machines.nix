@@ -46,15 +46,15 @@ in
     (lib.mapAttrs' (
       name: module:
       let
+        hostSystem = (getHostSpec name module).system;  # read per-host
         specialArgs = {
-          inherit inputs;
-          inherit syncoidClients;
+          inherit inputs syncoidClients;
           hostConfig.name = lib.removePrefix prefix name;
         };
       in
       {
         name = lib.removePrefix prefix name;
-        value = withSystem "x86_64-linux" ({ pkgs, ... }:
+        value = withSystem hostSystem ({ pkgs, ... }:
           inputs.nixpkgs.lib.nixosSystem {
             inherit specialArgs;
             modules = [

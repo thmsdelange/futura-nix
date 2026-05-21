@@ -3,5 +3,5 @@
   ...
 }:
 {
-  systems = import inputs.systems;
+  systems = import inputs.systems ++ [ "aarch64-linux" ];
 }

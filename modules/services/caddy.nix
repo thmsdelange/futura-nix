@@ -6,9 +6,9 @@
       plugins = [ 
         "github.com/caddy-dns/cloudflare@v0.2.3"
         "github.com/greenpau/caddy-security@v1.1.56"
-        "pkg.jsn.cam/caddy-defender@v0.10.0"
+        # "pkg.jsn.cam/caddy-defender@v0.10.0"
       ];
-      hash = "sha256-D+tnqIKvFkyVKLIrEb1+gE9YWKrDMcfVRLsmGUdPRfs=";
+      hash = "sha256-7e1QYP+DBIZ/izYPYrb9HGbC+AEPnx3z+T/GyADOAW0=";
     }).overrideAttrs
       (old: {
         # Patch token validation regex to accept cfut_/cfat_ tokens (>50 chars).
@@ -128,13 +128,13 @@
       #   }
       # '';
 
-      extraConfig = ''
-        (blackholeCrawlers) {
-          defender drop {
-            ranges aliyun vpn aws deepseek githubcopilot gcloud azurepubliccloud openai mistral vultr digitalocean linode huawei
-          }
-        }
-      '';
+      # extraConfig = ''
+      #   (blackholeCrawlers) {
+      #     defender drop {
+      #       ranges aliyun vpn aws deepseek githubcopilot gcloud azurepubliccloud openai mistral vultr digitalocean linode huawei
+      #     }
+      #   }
+      # '';
     };
 
     networking.firewall.allowedTCPPorts = [ 443 ];

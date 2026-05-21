@@ -20,8 +20,13 @@
         pocket-id
         tailscale
         opencloud
+        immich
         scrutiny
         gaggimate
+        mealie
+        searx
+        mediaserver
+        postgres
         # dashboard
       ]
       # Specific Home-Manager modules
@@ -37,6 +42,7 @@
       ];
 
     hostSpec = {
+      isServer = true;
       hasSecrets = true;
       disks = {
         zfs = {
@@ -67,7 +73,6 @@
           extraUpFlags = [
             "--ssh=true"
             "--reset=true"
-            "--accept-dns=true"
           ];
           useRoutingFeatures = "server";
         };

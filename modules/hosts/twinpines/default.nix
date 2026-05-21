@@ -53,6 +53,7 @@
     boot.kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
 
     hostSpec = {
+      system = "aarch64-linux";
       isServer = true;
       hasSecrets = true;
       users = {
@@ -68,7 +69,6 @@
           extraUpFlags = [
             "--ssh=true"
             "--reset=true"
-            "--accept-dns=true"
           ];
           useRoutingFeatures = "server";
         };

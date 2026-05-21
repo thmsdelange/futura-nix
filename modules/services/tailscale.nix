@@ -20,7 +20,7 @@
 			enable = true;
 			package = pkgs.unstable.tailscale;
 			authKeyFile = if hasSecrets then config.sops.secrets."services/tailscale/ts-auth-key".path else cfg.authKeyFile; # TODO: only needed for bootstrap?
-			extraUpFlags = cfg.extraUpFlags;
+			extraUpFlags = cfg.extraUpFlags ++ (lib.optionals config.hostSpec.isServer [ "--accept-dns=false" ]);
 			useRoutingFeatures = cfg.useRoutingFeatures;
 			# permitCertUid = "caddy";
 		};

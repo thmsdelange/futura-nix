@@ -18,6 +18,12 @@
 
     inherit (config.hostSpec.impermanence) backupStorage dontBackup;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+
+    webCalendarPkg = pkgs.fetchzip {
+      url = "https://github.com/mschneider82/opencloud-web-calendar/releases/download/v0.0.2/web-app-calendar.zip";
+      hash = "sha256-7ilmLzLKWKqqmDRWUXJHzgbbZAiTib4jBRNvJyPLSJI=";
+      stripRoot = false;
+    };
   in
 	{
     sops.secrets = lib.mkIf hasSecrets {
@@ -31,6 +37,20 @@
 			# 	sopsFile = "${sopsRoot}/sops/hosts/${hostName}.yaml";
 			# };
 		};
+
+    # ### CalDav extension
+    # environment.etc."opencloud/web-config.json".text = builtins.toJSON {
+    #   external_apps = [
+    #     {
+    #       id = "web-calendar";
+    #       path = "web/assets/apps/web-calendar/js/web-calendar.js";
+    #     }
+    #   ];
+    # };
+
+    systemd.services.opencloud.serviceConfig.ExecStartPre = [
+      ("+${pkgs.bash}/bin/bash -c 'install -d -o opencloud -g opencloud ${config.services.opencloud.stateDir}/web/assets/apps/web-calendar && cp -r ${webCalendarPkg}/. ${config.services.opencloud.stateDir}/web/assets/apps/web-calendar/ && chown -R opencloud:opencloud ${config.services.opencloud.stateDir}/web/assets/apps/web-calendar'")
+    ];
 
     # Render a single env file that systemd will load, combining all static
     # config with the runtime secrets. The opencloud service user needs to
@@ -70,10 +90,13 @@
           - 'blob:'
           - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
           - 'https://id.${domain}/'
+          - 'https://esm.sh/'
         default-src:
           - "'none'"
         font-src:
           - "'self'"
+          - 'data:'
+          - 'https://esm.sh/'
         frame-ancestors:
           - "'self'"
         frame-src:
@@ -96,9 +119,11 @@
           - "'unsafe-inline'"
           - "'unsafe-eval'"
           - 'https://id.${domain}/'
+          - 'https://esm.sh/'
         style-src:
           - "'self'"
           - "'unsafe-inline'"
+          - 'https://esm.sh/'
     '';
 
     services.opencloud = {
@@ -108,16 +133,12 @@
       address = "127.0.0.1";
       port = ocPort;
       environmentFile = lib.mkIf hasSecrets config.sops.templates."oc-env".path;
-      environment = lib.mkMerge [
-        {
-          OC_BASE_DATA_PATH=if hasPersistDir then "${backupStorage}/opencloud" else "/mnt/opencloud";
-        }
-        (lib.mkIf (!hasSecrets) {
-          PROXY_TLS = "false";
-          OC_INSECURE = "true";
-          INITIAL_ADMIN_PASSWORD = "super-secret-password";
-        })
-      ];
+      environment = lib.mkIf (!hasSecrets) {
+        PROXY_TLS = "false";
+        OC_INSECURE = "true";
+        INITIAL_ADMIN_PASSWORD = "super-secret-password";
+      };
+      stateDir = if hasPersistDir then "${backupStorage}/opencloud" else "/mnt/opencloud";
       settings = {
         proxy = {
           csp_config_file_location = "/etc/opencloud/csp.yaml";
@@ -230,8 +251,8 @@
 
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {
       hideMounts = true;
-      directories = [ 
-        # "/var/lib/opencloud"
+      directories = [
+        "/etc/opencloud"
         "/var/lib/radicale"
       ];
     };
