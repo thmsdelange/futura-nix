@@ -66,7 +66,7 @@
           '';
 
           customCss = ''
-            @import url("https://theme-park.dev/css/base/jellyfin/${config.nixflix.theme.name}.css");
+            @import url('https://cdn.jsdelivr.net/gh/KartoffelChipss/NeutralFin@latest/theme/neutralfin-minified.css');
 
             a.raised.emby-button {
               padding: 0.9em 1em;

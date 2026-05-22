@@ -42,41 +42,51 @@
           defaultPermissions = 32;
           localLogin = false;
         };
-        # radarr = {
-        #   "1080p" = {
-        #     apiKey._secret = config.sops.secrets."services/radarr/api-key".path;
-        #     activeProfileName = "[SQP] SQP-1 (1080p)";
-        #     isDefault = true;
-        #     is4k = false;
-        #   };
-        #   "4K" = {
-        #     apiKey._secret = config.sops.secrets."services/radarr/api-key".path;
-        #     activeProfileName = "[SQP] SQP-1 (2160p)";
-        #     isDefault = false;
-        #     is4k = true;
-        #   };
-        # };
-        # sonarr = {
-        #   "1080p" = {
-        #     apiKey._secret = config.sops.secrets."services/sonarr/api-key".path;
-        #     activeProfileName = "WEB-1080p (Alternative)";
-        #     isDefault = true;
-        #     is4k = false;
-        #   };
-        #   "4K" = {
-        #     apiKey._secret = config.sops.secrets."services/sonarr/api-key".path;
-        #     activeProfileName = "WEB-2160p (Alternative)";
-        #     isDefault = false;
-        #     is4k = true;
-        #   };
-        # };
-        # sonarr-anime = {
-        #   "1080p" = {
-        #     apiKey._secret = config.sops.secrets."services/sonarr-anime/api-key".path;
-        #     activeProfileName = "[Anime] Remux-1080p";
-        #     isDefault = true;
-        #     is4k = false;
-        #   };
+        radarr = {
+          "1080p" = {
+            apiKey._secret = config.sops.secrets."services/radarr/api-key".path;
+            activeProfileName = "HD Bluray + WEB";
+            isDefault = true;
+            is4k = false;
+          };
+          "4K" = {
+            apiKey._secret = config.sops.secrets."services/radarr/api-key".path;
+            activeProfileName = "UHD Bluray + WEB";
+            isDefault = false;
+            is4k = true;
+          };
+        };
+        sonarr = {
+          "1080p" = {
+            apiKey._secret = config.sops.secrets."services/sonarr/api-key".path;
+            activeProfileName = "WEB-1080p (Alternative)";
+            isDefault = true;
+            is4k = false;
+          };
+          "4K" = {
+            apiKey._secret = config.sops.secrets."services/sonarr/api-key".path;
+            activeProfileName = "WEB-2160p (Alternative)";
+            isDefault = false;
+            is4k = true;
+          };
+          "Sonarr Anime" = {
+            hostname = config.nixflix.sonarr-anime.connectionAddress;
+            port = config.nixflix.sonarr-anime.config.hostConfig.port;
+            apiKey._secret = config.sops.secrets."services/sonarr-anime/api-key".path;
+
+            activeProfileName = "[Anime] Remux-1080p";
+            activeDirectory = builtins.head config.nixflix.sonarr-anime.mediaDirs;
+
+            activeAnimeProfileName = "[Anime] Remux-1080p";
+            activeAnimeDirectory = builtins.head config.nixflix.sonarr-anime.mediaDirs;
+
+            seriesType = "standard";
+            animeSeriesType = "anime";
+
+            isDefault = false;
+            is4k = false;
+          };
+        };
       };
 
       systemd.services.seerr-setup = {
