@@ -73,6 +73,16 @@
               color: inherit !important;
             }
 
+             /* Hide manual login form */
+            .manualLoginForm {
+              display: none !important;
+            }
+
+            /* Hide 'Forgot password' button */
+            .btnForgotPassword {
+              display: none !important;
+            }
+
             .disclaimerContainer {
               display: block;
             }

@@ -15,12 +15,13 @@ topLevel:
       storageDatasets =
         lib.optional thisHasStorage "zstorage/persistSave";
       nvmeDatasets =
-        lib.optional thisHasStorage "zfast/persistSave";
+        lib.optional thisHasNvme "zfast/persistSave";
     in
     {
       config = lib.mkMerge [
         (lib.mkIf thisHasZfs {
           services.syncoid.enable = true;
+          users.users.syncoid.shell = pkgs.bash;
 
           systemd.services = lib.mkMerge (
             map (dataset: {
@@ -54,10 +55,13 @@ topLevel:
           );
         })
 
+        ### remote backup pulling from backup server over tailscale
         (lib.mkIf (thisHasZfs && cfg.isBackupServer) {
           services.syncoid = {
             interval = "daily";
-            commonArgs = [ "--no-sync-snap" ];
+            commonArgs = [ 
+              "--no-sync-snap"
+            ];
             commands = lib.mkMerge (
               [
                 {
@@ -75,9 +79,9 @@ topLevel:
                   recvOptions = "c";
                 };
               }
-              ++ lib.optional thisHasNvme {
+              ++ lib.optional (thisHasNvme && !thisHasStorage) {
                 "${thisHost}NvmeSave" = {
-                  source = "fast/persistSave";
+                  source = "zfast/persistSave";
                   target = "zstorage/backups/${thisHost}-nvme";
                   recvOptions = "c";
                 };
@@ -86,24 +90,36 @@ topLevel:
                 [
                   {
                     "${c.hostName}Save" = {
-                      source = "syncoid@${c.hostName}:zroot/persistSave";
+                      source = "syncoid@${c.tailip}:zroot/persistSave";
                       target = "zstorage/backups/${c.hostName}";
                       recvOptions = "c";
+                      extraArgs = [
+                        "-o" "StrictHostKeyChecking=no"
+                        "-o" "UserKnownHostsFile=/dev/null"
+                      ];
                     };
                   }
                 ]
                 ++ lib.optional c.hasStorage {
                   "${c.hostName}StorageSave" = {
-                    source = "syncoid@${c.hostName}:zstorage/persistSave";
+                    source = "syncoid@${c.tailip}:zstorage/persistSave";
                     target = "zstorage/backups/${c.hostName}-storage";
                     recvOptions = "c";
+                    extraArgs = [
+                      "-o" "StrictHostKeyChecking=no"
+                      "-o" "UserKnownHostsFile=/dev/null"
+                    ];
                   };
                 }
                 ++ lib.optional c.hasNvme {
                   "${c.hostName}NvmeSave" = {
-                    source = "syncoid@${c.hostName}:zfast/persistSave";
+                    source = "syncoid@${c.tailip}:zfast/persistSave";
                     target = "zstorage/backups/${c.hostName}-nvme";
                     recvOptions = "c";
+                    extraArgs = [
+                      "-o" "StrictHostKeyChecking=no"
+                      "-o" "UserKnownHostsFile=/dev/null"
+                    ];
                   };
                 }
               ) clients
@@ -133,7 +149,8 @@ topLevel:
                 yearly = 0;
               };
             }
-            ++ lib.optional thisHasNvme {
+            ### only when fast does not backup to storage (which is then backed up to remote)
+            ++ lib.optional (thisHasNvme && !thisHasStorage) {
               datasets."zstorage/backups/${thisHost}-nvme" = {
                 autosnap = false;
                 autoprune = true;
@@ -166,7 +183,8 @@ topLevel:
                   yearly = 1;
                 };
               }
-              ++ lib.optional c.hasNvme {
+              ### only when fast does not backup to storage (which is then backed up to remote)
+              ++ lib.optional (c.hasNvme && !c.hasStorage) {
                 datasets."zstorage/backups/${c.hostName}-nvme" = {
                   autosnap = false;
                   autoprune = true;
@@ -178,6 +196,65 @@ topLevel:
               }
             ) clients
           );
+
+          # A service that runs after all syncoid jobs complete and shuts down
+          systemd.services.backup-and-shutdown = {
+            description = "Run syncoid backups then shut down";
+            after = [ "network-online.target" "tailscaled.service" ];
+            wants = [ "network-online.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = pkgs.writeShellScript "backup-and-shutdown" ''
+                echo "=== Starting backup run $(date) ==="
+                
+                failed=0
+                for service in ${lib.concatStringsSep " " (lib.mapAttrsToList (name: _: "syncoid-${name}.service") config.services.syncoid.commands)}; do
+                  echo "Starting $service..."
+                  systemctl start "$service"
+                  if systemctl is-failed "$service"; then
+                    echo "FAILED: $service"
+                    failed=1
+                  else
+                    echo "OK: $service"
+                  fi
+                done
+
+                echo "=== Backup run complete $(date) ==="
+                
+                if [ $failed -eq 1 ]; then
+                  echo "Some backups failed, check journalctl"
+                fi
+
+                echo "Shutting down..."
+                systemctl poweroff
+              '';
+              RemainAfterExit = false;
+            };
+            wantedBy = [ "multi-user.target" ];
+          };
+        })
+
+        ### local backup from fast to storage
+        (lib.mkIf (thisHasNvme && thisHasStorage && !cfg.isBackupServer) {
+          services.syncoid = {
+            interval = "*:15";
+            commonArgs = [ "--no-sync-snap" ];
+            commands = {
+              "${thisHost}NvmeSave" = {
+                source = "zfast/persistSave";
+                target = "zstorage/backups/${thisHost}-nvme";
+                recvOptions = "c";
+              };
+            };
+          };
+          services.sanoid.datasets."zstorage/backups/${thisHost}-nvme" = {
+            autosnap = false;
+            autoprune = true;
+            hourly = 24;
+            daily = 30;
+            monthly = 0;
+            yearly = 0;
+          };
         })
       ];
     };

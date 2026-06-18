@@ -4,11 +4,11 @@
   let
     caddyWithPlugins = (pkgs.caddy.withPlugins {
       plugins = [ 
-        "github.com/caddy-dns/cloudflare@v0.2.3"
-        "github.com/greenpau/caddy-security@v1.1.56"
+        "github.com/caddy-dns/cloudflare@v0.2.4"
+        "github.com/greenpau/caddy-security@v1.1.62"
         # "pkg.jsn.cam/caddy-defender@v0.10.0"
       ];
-      hash = "sha256-7e1QYP+DBIZ/izYPYrb9HGbC+AEPnx3z+T/GyADOAW0=";
+      hash = "sha256-dzCIHQwXO0EkCEwSRpmEh2Mgha+j0wmPKvr8b7yiPlg=";
     }).overrideAttrs
       (old: {
         # Patch token validation regex to accept cfut_/cfat_ tokens (>50 chars).

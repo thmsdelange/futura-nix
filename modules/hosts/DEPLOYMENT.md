@@ -16,7 +16,13 @@ just iso
 sudo dd if=latest.iso of=/dev/<device> bs=10MB oflag=dsync status=progress
 ```
 
-3. Executing the bootstrapping of the new host, therefore must have an entry under `modules/hosts` as well as a valid admin user (hostSpec.users.<user>.isAdmin = true;) that we can deploy to the target.
+3. Get host info to use in modules/hosts/<newhostname>/default.nix
+
+```
+just host-info thms <IP>
+```
+
+4. Executing the bootstrapping of the new host, therefore must have an entry under `modules/hosts` as well as a valid admin user (hostSpec.users.<user>.isAdmin = true;) that we can deploy to the target.
 
 ```
 scripts/futura-bootstrap.sh -n <hostname> -d <IP> -u thms -k ~/.ssh/id_ed25519 --impermanence

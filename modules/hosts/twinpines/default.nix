@@ -5,11 +5,12 @@
 }:
 {
   flake.modules.nixos.host-twinpines = 
-  { pkgs, lib, ... }:
+  { pkgs, lib, inputs, ... }:
   {
     imports =
       with config.flake.modules.nixos;
       [
+        inputs.nixos-hardware.nixosModules.raspberry-pi-3
         # Modules
         core
         shell
@@ -50,7 +51,11 @@
       efi.canTouchEfiVariables = lib.mkForce false;
       generic-extlinux-compatible.enable = true;
     };
-    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
+
+    # Couldn't write '33' to 'vm/mmap_rnd_bits': Invalid argument
+    boot.kernel.sysctl = {
+      "vm.mmap_rnd_bits" = 24;
+    };
 
     hostSpec = {
       system = "aarch64-linux";

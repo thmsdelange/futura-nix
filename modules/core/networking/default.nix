@@ -31,7 +31,7 @@
         allowPing = false;
       };
 
-      networkmanager.enable = lib.mkIf (!config.hostSpec.isServer) true;
+      networkmanager.enable = lib.mkIf (!config.hostSpec.isServer || config.hostSpec.networking.wifi) true;
     };
     
     ### settings that are only set when properly defined in the secrets (disabling DHCP and setting static ip) 

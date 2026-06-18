@@ -29,7 +29,7 @@
           "zstorage/persistSave".useTemplate = [ "default" ];
         }
         // lib.optionalAttrs (hasZfsNvme && !config.hostSpec.disks.amReinstalling) {
-          "zfast/storage".useTemplate = [ "default" ];
+          "zfast/fast".useTemplate = [ "default" ];
           "zfast/persistSave".useTemplate = [ "default" ];
         };
       };

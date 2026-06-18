@@ -11,7 +11,7 @@ zfs = {
     devNodes = if config.hostSpec.isVM # see: https://discourse.nixos.org/t/zfs-with-disko-faluire-to-import-zfs-pool/61988/6
     then "/dev/disk/by-uuid"
     else "/dev/disk/by-id/";
-    forceImportAll = true;
+    forceImportAll = false;
     requestEncryptionCredentials = true;
 };
 ```

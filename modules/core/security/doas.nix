@@ -5,7 +5,7 @@
 }:
 {
   flake.modules.nixos.core =
-    { config, ... }:
+    { config, pkgs, ... }:
     let
       adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) config.hostSpec.users));
     in

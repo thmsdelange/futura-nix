@@ -59,19 +59,22 @@
           environment.systemPackages = [ pkgs.zfs-prune-snapshots ];
           boot = {
             # Newest kernels might not be supported by ZFS
-            # kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+            # kernel = config.boot.zfs.package.latestCompatibleLinuxPackages;
             # ZFS does not support swapfiles, disable hibernate and set cache max
             kernelParams = [
               "nohibernate"
-              "zfs.zfs_arc_max=17179869184"
+              "zfs.zfs_arc_max=1073741824"
             ];
+            initrd.availableKernelModules = [ "ahci" "sd_mod" ];
             supportedFilesystems = [
               "vfat"
               "zfs"
             ];
             zfs = {
               devNodes = "/dev/disk/by-uuid";
-              forceImportAll = true;
+              # devNodes = "/dev/disk/by-partlabel";
+              forceImportAll = false;
+              forceImportRoot = false;
               requestEncryptionCredentials = true;
             };
           };
@@ -167,7 +170,7 @@
                   content = {
                     type = "gpt";
                     partitions = {
-                      ESP = {
+                      ESP = lib.mkIf (!config.hostSpec.legacyBoot) {
                         label = "EFI";
                         name = "ESP";
                         size = "2048M";
@@ -181,6 +184,19 @@
                             "umask=0077"
                           ];
                         };
+                      };
+                      boot = lib.mkIf config.hostSpec.legacyBoot {
+                        size = "512M";
+                        content = {
+                          type = "filesystem";
+                          format = "ext4";
+                          mountpoint = "/boot";
+                        };
+                      };
+                      biosboot = lib.mkIf config.hostSpec.legacyBoot {
+                        size = "1M";
+                        type = "EF02";
+                        priority = 1;
                       };
                       luks = lib.mkIf cfg.zfs.root.luks-encrypt {
                         size = "100%";
@@ -355,20 +371,16 @@
                     };
                   };
                   backups =
-                    lib.mkIf
-                      (
-                        config ? hostSpec.services.syncoid.isBackupServer
-                        && config.hostSpec.services.syncoid.isBackupServer
-                      )
-                      {
-                        type = "zfs_fs";
-                        mountpoint = "/backups";
-                        options = {
-                          atime = "off";
-                          canmount = "on";
-                          "com.sun:auto-snapshot" = "false";
-                        };
+                    lib.mkIf (config.hostSpec.services.syncoid.isBackupServer || (cfg.zfs.storage.enable && cfg.zfs.nvme.enable)) {
+                      type = "zfs_fs";
+                      mountpoint = "/storage/backups";
+                      options = {
+                        mountpoint = "legacy";
+                        atime = "off";
+                        canmount = "on";
+                        "com.sun:auto-snapshot" = "false";
                       };
+                    };
                 };
               };
               zfast = lib.mkIf (hasZfsNvme && !cfg.amReinstalling) {
@@ -418,6 +430,18 @@
                       "com.sun:auto-snapshot" = "false";
                     };
                   };
+                  swap = lib.mkIf cfg.zfs.nvme.swap {
+                    type = "zfs_volume";
+                    size = "16G";
+                    options = {
+                      compression = "off";
+                      sync = "always";
+                      primarycache = "metadata";
+                      secondarycache = "none";
+                      "com.sun:auto-snapshot" = "false";
+                      blocksize = "4096";
+                    };
+                  };
                 };
               };
             };
@@ -432,11 +456,48 @@
           fileSystems."/persist/save".neededForBoot = true;
         })
         (lib.mkIf (cfg.zfs.root.impermanenceRoot) {
-          boot.initrd.postResumeCommands =
-            #wipe / and /var on boot
-            lib.mkAfter ''
-              zfs rollback -r zroot/root@empty
-            '';
+          boot.initrd.systemd.services.rollback = {
+            description = "Rollback ZFS root to empty snapshot";
+            wantedBy = [ "initrd.target" ];
+            after = [ "zfs-import-zroot.service" ];
+            before = [ "sysroot.mount" ];
+            path = [ pkgs.zfs ];
+            unitConfig.DefaultDependencies = "no";
+            serviceConfig = {
+              Type = "oneshot";
+              ExecStart = "${pkgs.zfs}/bin/zfs rollback -r zroot/root@empty";
+            };
+          };
+        })
+        (lib.mkIf (cfg.zfs.nvme.swap) {
+          swapDevices = [{
+            device = "/dev/zvol/zfast/swap";
+            discardPolicy = "once";
+            priority = 100;
+          }];
+          boot.kernel.sysctl = {
+            "vm.swappiness" = 10;
+            "vm.vfs_cache_pressure" = 50;
+            "kernel.panic" = 10;
+            "kernel.panic_on_oops" = 1;
+          };
+        })
+        (lib.mkIf ( hasZfs && config.hostSpec.services.syncoid.isBackupServer) {
+          environment.systemPackages = [
+            (pkgs.writeShellScriptBin "mount-backups" ''
+              sudo zfs set canmount=on zstorage/backups
+              sudo zfs set mountpoint=legacy zstorage/backups
+              sudo mkdir -p /backups
+              sudo mount -t zfs zstorage/backups /backups
+              echo "Backups mounted at /backups"
+            '')
+            (pkgs.writeShellScriptBin "unmount-backups" ''
+              sudo umount /backups
+              sudo zfs set mountpoint=none zstorage/backups
+              sudo zfs set canmount=off zstorage/backups
+              echo "Backups unmounted"
+            '')
+          ];
         })
       ];
     };

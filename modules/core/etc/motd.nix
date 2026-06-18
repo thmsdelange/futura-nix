@@ -6,6 +6,7 @@
       users.motdFile = "/etc/motd";
       environment.etc.motd.text = ''
         =========== Futura NixOS config ===========
+        Host: ${hostConfig.name}
         NixOS release: ${config.system.nixos.release}
         Nixpkgs revision: ${inputs.nixpkgs.rev}
       ''; # TODO: add self.rev again

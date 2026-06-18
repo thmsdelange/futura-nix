@@ -138,6 +138,11 @@ let
           default = false;
           description = "mirror the zfs pool";
         };
+        swap = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "whether a swap zvol has to be created";
+        };
       };
     };
   };

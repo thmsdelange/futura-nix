@@ -44,6 +44,7 @@
       };
 
       hostSpec = {
+        hasSecrets = false;
         users = {
           thms = {
             isAdmin = true;

@@ -29,10 +29,15 @@ let
       eval.config.hostSpec;
 
   syncoidClients = lib.attrValues (
-    lib.filterAttrs (name: c: c.hasZfs) (
+    lib.filterAttrs (name: c: c.hasZfs && c.tailip != null) ( # note that hosts without a tailip defined are filtered out!
       lib.mapAttrs (name: module:
-        let spec = getHostSpec name module; in {
+        let
           hostName = lib.removePrefix prefix name;
+          spec = getHostSpec name module; 
+        in {
+          inherit hostName;
+          tailip = spec.networking.host.tailip;
+          sshPort = spec.networking.ports.${hostName}.tcp.ssh or 22;
           hasZfs = spec.disks.zfs.enable;
           hasStorage = spec.disks.zfs.storage.enable;
           hasNvme = spec.disks.zfs.nvme.enable;

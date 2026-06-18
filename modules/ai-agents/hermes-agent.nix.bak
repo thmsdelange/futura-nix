@@ -1,0 +1,117 @@
+# {
+#   flake.modules.nixos.hermes-agent = 
+#   { config, lib, hostConfig, inputs, pkgs, ... }:
+#   let
+#     sgPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.signal-cli or 8818);
+#     hmPort = (config.hostSpec.networking.ports.${hostConfig.name}.tcp.hermes-agent or 3248);
+
+#     ### TODO: handle this ugly-ass block better across all submodules where it is required
+#     hostName = hostConfig.name;
+#     inherit (config.hostSpec) hasSecrets;
+#     sopsRoot = builtins.toString inputs.futura-secrets;
+#     networkingSecrets = config.hostSpec.networking or {};
+#     hasPrimarySubnet = builtins.hasAttr "subnets" networkingSecrets && builtins.hasAttr "primary" networkingSecrets.subnets;
+#     subnet = if hasPrimarySubnet then networkingSecrets.subnets.primary else null;
+#     hostInSecrets = hasPrimarySubnet && builtins.hasAttr hostName subnet.hosts;
+#     host = if hostInSecrets then subnet.hosts.${hostName} else null;
+#     domain = networkingSecrets.domain;
+
+#     inherit (config.hostSpec.impermanence) backupStorage backup dontBackup backupFast dontBackupFast;
+#     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+
+#     adminUser = builtins.head (builtins.attrNames (lib.filterAttrs (_: u: u.isAdmin) config.hostSpec.users));
+#   in
+#   {
+#     imports = [
+#       inputs.hermes-agent.nixosModules.default
+#     ];
+
+#     users.groups.hermes = {};
+#     users.users.${adminUser}.extraGroups = [ "hermes" ];
+
+#     sops.secrets = {
+#       "services/hermes-agent/env" = {
+#         sopsFile = "${sopsRoot}/sops/hosts/${hostName}.yaml";
+#         owner = adminUser;
+#         group = "hermes";
+#         mode = "0440";
+#       };
+#       "signal/user" = {
+#         sopsFile = "${sopsRoot}/sops/users/${adminUser}.yaml";
+#         owner = adminUser;
+#         group = "hermes";
+#         mode = "0440";
+#       };
+#     };
+
+#     environment.systemPackages = with pkgs.unstable; [
+#       signal-cli
+#       jdk17
+#     ];
+
+#     services.hermes-agent = {
+#       enable = true;
+#       createUser = false;
+#       user = adminUser;
+#       group = "hermes";
+
+#       addToSystemPackages = true;
+
+#       environmentFiles = [
+#         config.sops.secrets."services/hermes-agent/env".path
+#       ];
+
+#       environment = {
+#         HERMES_PORT = toString hmPort;
+#       };
+
+#       settings = {
+#         # Verify exact provider key with:
+#         # nix build .#configKeys && cat result
+#         model = {
+#           provider = "openai";
+#           default = "codex";
+#         };
+#       };
+#     };
+
+#     systemd.services.hermes-agent = {
+#       after = [ "signal-cli-daemon.service" ];
+#       wants = [ "signal-cli-daemon.service" ];
+
+#       serviceConfig = {
+#         User = lib.mkForce adminUser;
+#         Group = lib.mkForce "hermes";
+#         Environment = [
+#           "HOME=/home/${adminUser}"
+#         ];
+#       };
+#       # Ensure .hermes subdir is writable by the running user
+#       preStart = ''
+#         install -d -m 0750 -o ${adminUser} -g hermes /var/lib/hermes/.hermes
+#       '';
+#     };
+
+#     systemd.services.signal-cli-daemon = {
+#       environment = {
+#         JAVA_TOOL_OPTIONS = "-Djava.net.preferIPv4Stack=true -Djava.net.preferIPv6Addresses=false";
+#       };
+
+#       script = ''
+#         ACCOUNT=$(cat ${config.sops.secrets."signal/user".path})
+#         exec ${pkgs.unstable.signal-cli}/bin/signal-cli \
+#           --account "$ACCOUNT" \
+#           daemon \
+#           --http 127.0.0.1:${toString sgPort}
+#       '';
+
+#       serviceConfig = {
+#         User = adminUser;
+#         Group = "hermes";
+#         Environment = "HOME=/home/${adminUser}";
+#         WorkingDirectory = "/home/${adminUser}";
+#       };
+#     };
+#   };
+# }
+{}

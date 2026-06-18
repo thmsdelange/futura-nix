@@ -36,6 +36,13 @@ let
         It goes without saying that this is a temporary switch and as such sops should be configured prompty.
         '';
     };
+    legacyBoot = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Used to indicate a host does not support UEFI boot, so use GRUB instead.
+        '';
+    };
     nixpkgs = lib.mkOption {
       type = lib.types.str;
       default = "stable";
@@ -195,18 +202,32 @@ let
       default = {};
     };
   };
+
+  
 in
 {
   flake.modules.nixos.hostSpec =
-    { config, lib, inputs, ... }:
+    { config, hostConfig, lib, inputs, ... }:
+    let
+      networkingSecrets = inputs.futura-secrets.networking or {};
+      hasPrimarySubnet = builtins.hasAttr "subnets" networkingSecrets && builtins.hasAttr "primary" networkingSecrets.subnets;
+      subnet = if hasPrimarySubnet then networkingSecrets.subnets.primary else null;
+      hostName = hostConfig.name;
+      hostInSecrets = hasPrimarySubnet && builtins.hasAttr hostName (subnet.hosts or {});
+    in
     {
       options.hostSpec = hostOptions;
       config.hostSpec = {
         inherit (inputs.futura-secrets)
-          networking
           users
           services
           ;
+        networking = (inputs.futura-secrets.networking or {}) // {
+          subnet = subnet;
+          host = if hostInSecrets then subnet.hosts.${hostName} else null;
+          domain = networkingSecrets.domain or "";
+          wifi = lib.mkDefault false;
+        };
       };
     };
 

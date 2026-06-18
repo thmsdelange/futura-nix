@@ -1,0 +1,3 @@
+# JIGOWATT
+
+AI server.

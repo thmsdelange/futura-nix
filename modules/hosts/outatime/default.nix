@@ -4,25 +4,17 @@
   ...
 }:
 {
-  flake.modules.nixos.host-continuum = {
+  flake.modules.nixos.host-outatime = 
+  { pkgs, lib, ... }:
+  {
     imports =
       with config.flake.modules.nixos;
       [
         # Modules
         core
-        # desktop-niri
-        # virtualisation
-        # bluetooth
-        # desktop
-        # displaylink
-        # dev
-        # education
-        # fwupd
-        # games
-        # lora
-        # sound
-        # vpn
+        shell
 
+        tailscale
       ]
       # Specific Home-Manager modules
       ++ [
@@ -30,45 +22,28 @@
           home-manager.users.thms = { # TODO: can this be made variable as well?
             imports = with config.flake.modules.homeManager; [
               core
-              # desktop-niri
-              # desktop
-              # dev
-              # email
-              # messaging
-              # games
               shell
-              # work
             ];
           };
         }
       ];
 
-    # I would like to make this stuff a bit cleaner. Would be nice if this can be a TODO(hostSpec) option (stable|unstable|master)
-    nixpkgs = {
-      overlays = [
-        (final: _prev: {
-          unstable = import inputs.nixpkgs-unstable {
-            inherit (final) config system;
-          };
-        })
-      ];
-    };
-
     hostSpec = {
+      isServer = true;
       hasSecrets = true;
-      isVM = true;
+      legacyBoot = true;
       disks = {
         zfs = {
           enable = true;
-          hostID = "7bb8bc8a";
+          hostID = "686330f8";
           root = {
-            disk1 = "vda";
+            disk1 = "sda";
             reservation = "10G";
-            impermanenceRoot = true;
+            impermanenceRoot = false; # NOTE: must be false to avoid clash between initrd.systemd and rollback!
           };
           storage = {
-            enable = true;
-            disks = [ "vdb" "vdc" ];
+          enable = true;
+            disks = [ "sdb" "sdc" ];
             reservation = "10G";
             mirror = true;
           };
@@ -80,6 +55,18 @@
           authorizedKeys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAo9HJGB/8Qan1n62aR7cqci6CXm/z25DtLfAuaISTbB thomas@PC-THOMAS"
           ];
+        };
+      };
+      services = {
+        syncoid = {
+          isBackupServer = true;
+        };
+        tailscale = {
+          extraUpFlags = [
+            "--ssh=true"
+            "--reset=true"
+          ];
+          useRoutingFeatures = "server";
         };
       };
     };

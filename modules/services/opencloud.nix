@@ -16,14 +16,17 @@
     host = if hostInSecrets then subnet.hosts.${hostName} else null;
     domain = networkingSecrets.domain;
 
-    inherit (config.hostSpec.impermanence) backupStorage dontBackup;
+    inherit (config.hostSpec.impermanence) backupStorage backup dontBackup backupFast dontBackupFast;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+    hasNvme = config.hostSpec.disks.zfs.nvme.enable;
 
+    ### TODO: fix, not working anymore!!
     webCalendarPkg = pkgs.fetchzip {
-      url = "https://github.com/mschneider82/opencloud-web-calendar/releases/download/v0.0.2/web-app-calendar.zip";
+      url = "https://github.com/mschneider82/opencloud-web-calendar/releases/download/v0.0.7/web-app-calendar.zip";
       hash = "sha256-7ilmLzLKWKqqmDRWUXJHzgbbZAiTib4jBRNvJyPLSJI=";
       stripRoot = false;
     };
+    opencloudUsers = config.hostSpec.services.opencloud.users;
   in
 	{
     sops.secrets = lib.mkIf hasSecrets {
@@ -129,7 +132,7 @@
     services.opencloud = {
       enable = true;
       package = pkgs.unstable.opencloud;
-      url = "https://ocloud.${domain}";
+      url = "https://cloud.${domain}";
       address = "127.0.0.1";
       port = ocPort;
       environmentFile = lib.mkIf hasSecrets config.sops.templates."oc-env".path;
@@ -138,7 +141,7 @@
         OC_INSECURE = "true";
         INITIAL_ADMIN_PASSWORD = "super-secret-password";
       };
-      stateDir = if hasPersistDir then "${backupStorage}/opencloud" else "/mnt/opencloud";
+      stateDir = if hasPersistDir then (if hasNvme then "${backupFast}/opencloud" else "${backupStorage}/opencloud") else "/mnt/opencloud";
       settings = {
         proxy = {
           csp_config_file_location = "/etc/opencloud/csp.yaml";
@@ -214,6 +217,7 @@
     ### Radicale setup
     services.radicale = {
       enable = true;
+      package = pkgs.unstable.radicale;
       settings = {
         server = {
           hosts = [ "127.0.0.1:${builtins.toString rcPort}" ];
@@ -223,36 +227,94 @@
           type = "http_x_remote_user"; # disable authentication, and use the username that OpenCloud provides
         };
         web = {
-          type = "none";
+          type = "none";  # set to none to disable web interface
         };
         storage = {
           filesystem_folder = "/var/lib/radicale/collections";
           predefined_collections = builtins.toJSON {
             def-addressbook = {
-              "D:displayname" = "OpenCloud Address Book";
+              "D:displayname" = "DeLorean Address Book";
               tag = "VADDRESSBOOK";
             };
             def-calendar = {
               "C:supported-calendar-component-set" = "VEVENT,VJOURNAL,VTODO";
-              "D:displayname" = "OpenCloud Calendar";
+              "D:displayname" = "DeLorean Calendar";
               tag = "VCALENDAR";
             };
           };
         };
         logging = {
-          level = "debug"; # optional, enable debug logging
+          level = "info"; # optional, enable debug logging
           bad_put_request_content = true; # only if level=debug
           request_header_on_debug = true; # only if level=debug
           request_content_on_debug = true; # only if level=debug
           response_content_on_debug = true; # only if level=debug
         };
       };
+      rights = {
+        root = {
+          user = ".+";
+          collection = "";
+          permissions = "R";
+        };
+
+        principal = {
+          user = ".+";
+          collection = "{user}";
+          permissions = "RW";
+        };
+
+        calendars = {
+          user = ".+";
+          collection = "{user}/[^/]+";
+          permissions = "rw";
+        };
+      };
+      # rights = {
+      #   root = {
+      #     user = ".+";
+      #     collection = "";
+      #     permissions = "R";
+      #   };
+
+      #   principal = {
+      #     user = ".+";
+      #     collection = "{user}";
+      #     permissions = "RW";
+      #   };
+
+      #   calendars = {
+      #     user = ".+";
+      #     collection = "{user}/[^/]+";
+      #     permissions = "rw";
+      #   };
+
+      #   # Sharing
+      #   share-thms-mrn = {
+      #     user = opencloudUsers.thms;
+      #     collection = "${opencloudUsers.mrn}/def-calendar";
+      #     permissions = "ro";
+      #   };
+
+      #   share-mrn-thms = {
+      #     user = opencloudUsers.mrn;
+      #     collection = "${opencloudUsers.thms}/def-calendar";
+      #     permissions = "ro";
+      #   };
+      # };
     };
 
+    ### etc files are declared in this config
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {
       hideMounts = true;
       directories = [
         "/etc/opencloud"
+      ];
+    };
+    ### we want to backup calendars
+    environment.persistence."${backup}" = lib.mkIf hasPersistDir {
+      hideMounts = true;
+      directories = [
         "/var/lib/radicale"
       ];
     };
@@ -260,9 +322,14 @@
     #   "d /var/lib/private 0700 root root -"
     # ];
 
+    ### symlinking a shared calendar
+    systemd.tmpfiles.rules = [
+      "L+ /var/lib/radicale/collections/collection-root/${opencloudUsers.mrn}/def-calendar - radicale radicale - /var/lib/radicale/collections/collection-root/${opencloudUsers.thms}/def-calendar"
+    ];
+
     ### needed for non-standard storage location
     systemd.services.opencloud.serviceConfig.ReadWritePaths = [
-      "/storage"
+      "/fast"
     ];
 
     systemd.services.opencloud.restartTriggers = [
@@ -270,11 +337,13 @@
       config.sops.templates."oc-env".path
     ];
 
-    services.caddy.virtualHosts."ocloud.${domain}" = {
+    services.caddy.virtualHosts."cloud.${domain}" = {
       extraConfig = ''
         reverse_proxy 127.0.0.1:${builtins.toString ocPort}
       '';
     };
-    hostSpec.services.adguardhome.splitHorizonSubdomains = [ "ocloud" ];
+    hostSpec.services.adguardhome.splitHorizonSubdomains = [ 
+      "cloud"
+    ];
 	};
 }

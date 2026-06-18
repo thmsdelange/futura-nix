@@ -24,6 +24,7 @@
         scrutiny
         gaggimate
         mealie
+        vikunja
         searx
         mediaserver
         postgres
@@ -41,6 +42,41 @@
         }
       ];
 
+    ### delorean has OOM issues, so requires systemd-oom tuning
+    services.earlyoom = {
+      enable = true;
+      freeMemThreshold = 5;   # kill when <5% RAM free
+      freeSwapThreshold = 2;  # kill when <2% swap free
+    };
+    systemd.timers.nix-gc.timerConfig = {
+      OnCalendar = lib.mkForce "03:35";
+      RandomizedDelaySec = lib.mkForce "10min";
+    };
+    systemd.services.nix-gc.serviceConfig.MemoryMax = "512M";
+    systemd.services.immich-server.serviceConfig.MemoryMax = "2G";
+    systemd.services.opencloud.serviceConfig.MemoryMax = "1G";
+    systemd.services.postgresql.serviceConfig.MemoryMax = "1G";
+    systemd.services.radarr.serviceConfig.MemoryMax = "400M";
+    systemd.services.sonarr.serviceConfig.MemoryMax = "400M";
+    systemd.services.sonarr-anime.serviceConfig.MemoryMax = "400M";
+    systemd.services.prowlarr.serviceConfig.MemoryMax = "300M";
+    systemd.services.lidarr.serviceConfig.MemoryMax = "300M";
+    systemd.services.jellyfin.serviceConfig.MemoryMax = "800M";
+    systemd.timers.scrutiny-collector.timerConfig = {
+      OnCalendar = lib.mkForce "02:15";
+    };
+    systemd.services.scrutiny-collector.serviceConfig.MemoryMax = "256M";
+    boot.crashDump.enable = true;
+    systemd.settings.Manager.RuntimeWatchdogSec = "30s";
+    systemd.settings.Manager.RebootWatchdogSec = "1min";
+    # boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+    boot.kernelParams = [
+      "nmi_watchdog=panic"
+      "softlockup_panic=1"
+      "hardlockup_panic=1"
+    ];
+
+
     hostSpec = {
       isServer = true;
       hasSecrets = true;
@@ -54,9 +90,15 @@
             impermanenceRoot = true;
           };
           storage = {
-          enable = true;
+            enable = true;
             disks = [ "sdb" ];
             reservation = "10G";
+          };
+          nvme = {
+            enable = true;
+            disks = [ "nvme0n1" ];
+            reservation = "10G";
+            swap = false;
           };
         };
       };

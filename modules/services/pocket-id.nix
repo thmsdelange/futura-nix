@@ -50,6 +50,7 @@
         EMAILS_VERIFIED=false;
         TRUST_PROXY=true;
         ANALYTICS_DISABLED=true;
+        DISABLE_RATE_LIMITING=true;
       };
       environmentFile = if hasSecrets then config.sops.templates."pid-env".path else "/dev/null";
     };

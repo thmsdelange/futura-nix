@@ -45,7 +45,7 @@
               ];
               user = "root";
               sudo = "doas -u";
-              remoteBuild = hostname != "twinpines";
+              remoteBuild = hostname != "twinpines" && hostname != "outatime";
               confirmTimeout = 300;
               path = inputs.deploy-rs.lib.${system}.activate.nixos nixosConfiguration;
             };

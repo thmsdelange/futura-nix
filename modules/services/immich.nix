@@ -16,8 +16,9 @@
     domain = networkingSecrets.domain;
     subdomain = "photos";
 
-    inherit (config.hostSpec.impermanence) backupStorage dontBackup;
+    inherit (config.hostSpec.impermanence) backupStorage dontBackup backupFast dontBackupFast;
     hasPersistDir = config.hostSpec.disks.zfs.root.impermanenceRoot;
+    hasNvme = config.hostSpec.disks.zfs.nvme.enable;
   in
 	{
     sops.secrets = lib.mkIf hasSecrets {
@@ -39,7 +40,7 @@
       package = pkgs.unstable.immich;
       port = imPort;
       host = "127.0.0.1";
-      mediaLocation = if hasPersistDir then "${backupStorage}/immich/upload" else "/mnt/immich";
+      mediaLocation = if hasPersistDir then (if hasNvme then "${backupFast}/immich/upload" else "${backupStorage}/immich/upload") else "/mnt/immich";
       database = {
         enable = true;
         createDB = true;
@@ -298,16 +299,7 @@
       };
     };
 
-    # environment.persistence."${backupStorage}" = {
-    #   directories = [
-    #     { 
-    #       directory = "/var/lib/postgresql"; 
-    #       user = "postgres"; 
-    #       group = "postgres"; 
-    #       mode = "0700"; }
-    #   ];
-    # };
-
+    ### we don't backup postgres here, but instead use modules/services/postgres.nix
     environment.persistence."${dontBackup}" = lib.mkIf hasPersistDir {
       directories = [ 
         "/var/lib/postgresql"

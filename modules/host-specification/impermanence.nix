@@ -19,6 +19,11 @@ let
       default = "/storage/save";
       description = "The persistent directory to backup";
     };
+    backupFast = lib.mkOption {
+      type = lib.types.str;
+      default = "/fast/save";
+      description = "The persistent directory to backup";
+    };
     dontBackup = lib.mkOption {
       type = lib.types.str;
       default = "/persist";
@@ -27,6 +32,11 @@ let
     dontBackupStorage = lib.mkOption {
       type = lib.types.str;
       default = "/storage";
+      description = "The persistent directory to not backup";
+    };
+    dontBackupFast = lib.mkOption {
+      type = lib.types.str;
+      default = "/fast";
       description = "The persistent directory to not backup";
     };
   };
